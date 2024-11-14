@@ -1,39 +1,61 @@
 import { Tabs } from "expo-router";
-import React, { Children } from "react";
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import React from "react";
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        headerShown: false,
+        headerStyle: {
+          backgroundColor: "lightgray",
+        },
+        headerShadowVisible: true,
+        tabBarActiveTintColor: "orange",
+        tabBarStyle: {
+          backgroundColor: "lightgray",
+        },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
+          headerShown: false,
           title: "Home",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "home" : "home-outline"}
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons
+              name={focused ? "home-sharp" : "home-outline"}
               color={color}
+              size={24}
             />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="gallery"
         options={{
-          title: "Explore",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "code-slash" : "code-slash-outline"}
+          title: "Gallery",
+
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons
+              name={focused ? "image" : "image-outline"}
               color={color}
+              size={24}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="about"
+        options={{
+          title: "About",
+
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons
+              name={
+                focused ? "information-circle" : "information-circle-outline"
+              }
+              color={color}
+              size={24}
             />
           ),
         }}
