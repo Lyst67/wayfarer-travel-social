@@ -1,7 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, FlatList, Platform, Pressable } from "react-native";
 import { Image, type ImageSource } from "expo-image";
-import React from "react";
 
 type Props = {
   onSelect: (image: ImageSource) => void;
@@ -10,12 +9,13 @@ type Props = {
 
 export default function EmojiList({ onSelect, onCloseModal }: Props) {
   const [emoji] = useState<ImageSource[]>([
-    require("../assets/images/emoji1.png"),
-    require("../assets/images/emoji2.png"),
-    require("../assets/images/emoji3.png"),
-    require("../assets/images/emoji4.png"),
-    require("../assets/images/emoji5.png"),
-    require("../assets/images/emoji6.png"),
+    require("../assets/images/emojies/art.png"),
+    require("../assets/images/emojies/blush.png"),
+    require("../assets/images/emojies/cherry_blossom.png"),
+    require("../assets/images/emojies/heart_eyes.png"),
+    require("../assets/images/emojies/man.png"),
+    require("../assets/images/emojies/sunglasses.png"),
+    require("../assets/images/emojies/woman.png"),
   ]);
 
   return (

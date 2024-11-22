@@ -1,11 +1,15 @@
 import { View, StyleSheet } from "react-native";
 import React, { useState } from "react";
+import { ImageSource } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
+
 import ImageViewer from "@/components/imageViwer";
 import Button from "@/components/button";
-import * as ImagePicker from "expo-image-picker";
 import IconButton from "@/components/iconButton";
 import CircleButton from "@/components/circleButton";
 import EmojiPicker from "@/components/emojiPicker";
+import EmojiList from "@/components/emojiList";
+import EmojiSticker from "@/components/emojiSticker";
 
 const PlaceholderImage = {
   uri: "https://docs.expo.dev/static/images/tutorial/background-image.png",
@@ -17,6 +21,9 @@ export default function GalleryScreen() {
   );
   const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [pickedEmoji, setPickedEmoji] = useState<ImageSource | undefined>(
+    undefined
+  );
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -51,6 +58,9 @@ export default function GalleryScreen() {
           imgSource={PlaceholderImage}
           selectedImage={selectedImage}
         />
+        {pickedEmoji && (
+          <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />
+        )}
       </View>
       {showAppOptions ? (
         <View style={styles.optionsContainer}>
@@ -75,7 +85,7 @@ export default function GalleryScreen() {
         </View>
       )}
       <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
-        {/* A list of emoji component will go here */}
+        <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
       </EmojiPicker>
     </View>
   );
