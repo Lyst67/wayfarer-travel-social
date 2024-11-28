@@ -1,7 +1,11 @@
-import { View, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import { View, StyleSheet, Platform } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { ImageSource } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
+import * as MediaLibrary from "expo-media-library";
+import { captureRef } from "react-native-view-shot";
+import domtoimage from "dom-to-image";
+import React from "react";
 
 import ImageViewer from "@/components/imageViwer";
 import Button from "@/components/button";
@@ -24,6 +28,14 @@ export default function GalleryScreen() {
   const [pickedEmoji, setPickedEmoji] = useState<ImageSource | undefined>(
     undefined
   );
+  const [status, requestPermission] = MediaLibrary.usePermissions();
+  const imageRef = useRef<View>(null);
+
+  useEffect(() => {
+    if (!status?.granted) {
+      requestPermission();
+    }
+  }, []);
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -47,13 +59,43 @@ export default function GalleryScreen() {
   const onModalClose = () => {
     setIsModalVisible(false);
   };
+
   const onSaveImageAsync = async () => {
-    // we will implement this later
+    if (Platform.OS !== "web") {
+      try {
+        const localUri = await captureRef(imageRef, {
+          height: 440,
+          quality: 1,
+        });
+
+        await MediaLibrary.saveToLibraryAsync(localUri);
+        if (localUri) {
+          alert("Saved!");
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      try {
+        const dataUrl = await domtoimage.toJpeg(imageRef.current, {
+          quality: 0.95,
+          width: 320,
+          // height: 440,
+        });
+
+        let link = document.createElement("a");
+        link.download = "sticker-smash.jpeg";
+        link.href = dataUrl;
+        link.click();
+      } catch (e) {
+        console.log(e);
+      }
+    }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.imageContainer}>
+      <View ref={imageRef} collapsable={false} style={styles.imageContainer}>
         <ImageViewer
           imgSource={PlaceholderImage}
           selectedImage={selectedImage}
