@@ -1,10 +1,43 @@
 import { Text, View, StyleSheet } from "react-native";
-import React from "react";
+import React, { useCallback } from "react";
+import { ScrollView } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
+
+const COURSES = [
+  {
+    id: "45k6-j54k-4jth",
+    title: "HTML",
+  },
+  {
+    id: "4116-jfk5-43rh",
+    title: "JavaScript",
+  },
+  {
+    id: "4d16-5tt5-4j55",
+    title: "React",
+  },
+  {
+    id: "LG16-ant5-0J25",
+    title: "React Native",
+  },
+];
 
 export default function AboutScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello, Sicker Smash!</Text>
+      <FlatList
+        data={COURSES}
+        keyExtractor={(item) => item.id}
+        renderItem={useCallback(
+          ({ item }: { item: any }) => (
+            <>
+              <Text style={styles.text}>{item.title}</Text>
+              <hr style={{ height: 1, margin: 0 }} />
+            </>
+          ),
+          []
+        )}
+      />
     </View>
   );
 }
@@ -18,7 +51,7 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     fontSize: 42,
-    lineHeight: 84,
+    lineHeight: 284,
     fontWeight: "bold",
     backgroundColor: "#000000c0",
   },

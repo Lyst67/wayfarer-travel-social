@@ -1,3 +1,4 @@
+import RegistrationScreen from "@/components/Screens/registrationScreen";
 import React from "react";
 import { Text, View, StyleSheet, ImageBackground } from "react-native";
 
@@ -9,9 +10,7 @@ export default function Index() {
         resizeMode="cover"
         style={styles.backgroundImage}
       >
-        <View>
-          <Text style={styles.text}>Hello, Expo!</Text>
-        </View>
+        <RegistrationScreen />
       </ImageBackground>
     </View>
   );
@@ -26,17 +25,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     // opacity: 0.7,
   },
-  text: {
-    color: "white",
-    textAlign: "center",
-    fontSize: 42,
-    lineHeight: 84,
-    fontWeight: "bold",
-    backgroundColor: "#000000c0",
-  },
-  button: {
-    textDecorationLine: "underline",
-    fontSize: 22,
-    textAlign: "center",
-  },
+
+  // button: {
+  //   textDecorationLine: "underline",
+  //   fontSize: 22,
+  //   textAlign: "center",
+  // },
 });
