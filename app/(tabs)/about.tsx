@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet } from "react-native";
 import React, { useCallback } from "react";
-import { ScrollView } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
 const COURSES = [
   {
@@ -25,6 +25,7 @@ const COURSES = [
 export default function AboutScreen() {
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor="red"></StatusBar>
       <FlatList
         data={COURSES}
         keyExtractor={(item) => item.id}
@@ -32,7 +33,7 @@ export default function AboutScreen() {
           ({ item }: { item: any }) => (
             <>
               <Text style={styles.text}>{item.title}</Text>
-              <hr style={{ height: 1, margin: 0 }} />
+              <View style={{ height: 1, margin: 0 }} />
             </>
           ),
           []

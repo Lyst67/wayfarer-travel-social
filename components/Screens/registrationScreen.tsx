@@ -1,16 +1,31 @@
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import { StyleSheet, View, Text, Button, Pressable } from "react-native";
 import React from "react";
 import AddUserButton from "../addUserButton";
 import RegisterForm from "../registerForm";
+import SignButton from "../signButton";
+import LinkToSignButton from "../linkToSignButton";
 
 export default function RegistrationScreen() {
+  //
+  const addUserPhoto = () => {};
+  const navigateToLOgIn = () => {
+    alert("Login");
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.photoContainer}>
-        <AddUserButton />
+        <AddUserButton onPress={addUserPhoto} />
       </View>
       <Text style={styles.text}>Реєстрація</Text>
       <RegisterForm />
+
+      {/* <SignButton onPress={handleSignUp} label="Зареєстуватися" /> */}
+      <LinkToSignButton
+        label="Вже є акаунт? Увійти"
+        onPress={navigateToLOgIn}
+      />
+      <View style={styles.homeIndicator} />
     </View>
   );
 }
@@ -41,5 +56,13 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     fontWeight: 500,
     marginVertical: 32,
+  },
+  homeIndicator: {
+    width: 134,
+    height: 5,
+    marginHorizontal: "auto",
+    marginBottom: 8,
+    backgroundColor: "#212121",
+    borderRadius: 100,
   },
 });

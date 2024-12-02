@@ -1,10 +1,12 @@
 import RegistrationScreen from "@/components/Screens/registrationScreen";
+import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Text, View, StyleSheet, ImageBackground } from "react-native";
+import { View, StyleSheet, ImageBackground } from "react-native";
 
 export default function Index() {
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor="lightgreen" hidden={false} />
       <ImageBackground
         source={require("../../assets/images/photo-bg.png")}
         resizeMode="cover"
@@ -25,10 +27,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     // opacity: 0.7,
   },
-
-  // button: {
-  //   textDecorationLine: "underline",
-  //   fontSize: 22,
-  //   textAlign: "center",
-  // },
 });

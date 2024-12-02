@@ -2,9 +2,13 @@ import { View, Text, Pressable, StyleSheet } from "react-native";
 import React from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-export default function AddUserButton() {
+type Prop = {
+  onPress: () => void;
+};
+
+export default function AddUserButton({ onPress }: Prop) {
   return (
-    <Pressable style={styles.circleButton}>
+    <Pressable style={styles.circleButton} onPress={onPress}>
       <MaterialIcons name="add" size={12} color="#FF6C00" />
     </Pressable>
   );

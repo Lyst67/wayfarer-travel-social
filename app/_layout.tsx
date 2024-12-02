@@ -3,6 +3,7 @@ import { setStatusBarStyle } from "expo-status-bar";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFonts } from "expo-font";
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   const [fontsLloaded] = useFonts({
@@ -25,6 +26,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar backgroundColor="lightgreen" hidden={false} />
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" options={{}} />
