@@ -1,3 +1,4 @@
+import LoginScreen from "@/components/Screens/loginScreen";
 import RegistrationScreen from "@/components/Screens/registrationScreen";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
@@ -13,6 +14,7 @@ export default function Index() {
         style={styles.backgroundImage}
       >
         <RegistrationScreen />
+        {/* <LoginScreen /> */}
       </ImageBackground>
     </View>
   );

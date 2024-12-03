@@ -1,15 +1,15 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import React from "react";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 type Prop = {
   onPress: () => void;
 };
 
-export default function AddUserButton({ onPress }: Prop) {
+export default function AddUserImageButton({ onPress }: Prop) {
   return (
     <Pressable style={styles.circleButton} onPress={onPress}>
-      <MaterialIcons name="add" size={12} color="#FF6C00" />
+      <Ionicons name="add" size={22} color="#FF6C00" />
     </Pressable>
   );
 }
@@ -23,9 +23,9 @@ const styles = StyleSheet.create({
     borderColor: "#FF6C00",
     borderRadius: 12,
     backgroundColor: "#fff",
-    marginLeft: "auto",
-    marginTop: "auto",
-    marginBottom: 12,
-    marginRight: -12,
+    position: "absolute",
+    right: -12,
+    bottom: 12,
+    zIndex: 10,
   },
 });

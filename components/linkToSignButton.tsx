@@ -1,6 +1,5 @@
 import { Text, Pressable, StyleSheet } from "react-native";
 import React from "react";
-import { View } from "react-native";
 
 type Props = {
   label: string;
@@ -17,7 +16,6 @@ export default function LinkToSignButton({ label, onPress }: Props) {
 const styles = StyleSheet.create({
   button: {
     marginTop: 16,
-    marginBottom: 66,
     marginHorizontal: "auto",
   },
   text: {

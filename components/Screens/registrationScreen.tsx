@@ -1,13 +1,36 @@
-import { StyleSheet, View, Text, Button, Pressable } from "react-native";
-import React from "react";
-import AddUserButton from "../addUserButton";
+import { StyleSheet, View, Text } from "react-native";
+import React, { useState } from "react";
+import * as ImagePicker from "expo-image-picker";
+
 import RegisterForm from "../registerForm";
-import SignButton from "../signButton";
 import LinkToSignButton from "../linkToSignButton";
+import UserImage from "../userImage";
+import AddUserImageButton from "../addUserImageButton";
+import DeleteImageButton from "../deleteImageButton";
 
 export default function RegistrationScreen() {
-  //
-  const addUserPhoto = () => {};
+  const [userImage, setUserImage] = useState<string | null>(null);
+  const [addUserButton, setAddUserButton] = useState<boolean>(true);
+
+  const pickUserImageAsync = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      quality: 1,
+    });
+    if (!result.canceled) {
+      setUserImage(result.assets[0].uri);
+      setAddUserButton(false);
+    } else {
+      alert("You did not select any image.");
+    }
+  };
+  const deleteUserImage = () => {
+    if (userImage !== null) {
+      setUserImage(null);
+    }
+    setAddUserButton(true);
+  };
   const navigateToLOgIn = () => {
     alert("Login");
   };
@@ -15,12 +38,15 @@ export default function RegistrationScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.photoContainer}>
-        <AddUserButton onPress={addUserPhoto} />
+        <UserImage selectedImage={userImage} />
+        {addUserButton ? (
+          <AddUserImageButton onPress={pickUserImageAsync} />
+        ) : (
+          <DeleteImageButton onPress={deleteUserImage} />
+        )}
       </View>
       <Text style={styles.text}>Реєстрація</Text>
       <RegisterForm />
-
-      {/* <SignButton onPress={handleSignUp} label="Зареєстуватися" /> */}
       <LinkToSignButton
         label="Вже є акаунт? Увійти"
         onPress={navigateToLOgIn}
@@ -61,6 +87,7 @@ const styles = StyleSheet.create({
     width: 134,
     height: 5,
     marginHorizontal: "auto",
+    marginTop: 66,
     marginBottom: 8,
     backgroundColor: "#212121",
     borderRadius: 100,
