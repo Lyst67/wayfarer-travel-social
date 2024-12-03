@@ -3,7 +3,6 @@ import {
   StyleSheet,
   TextInput,
   Pressable,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
@@ -15,7 +14,7 @@ import SignButton from "./signButton";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [username, setUsername] = useState("");
+  // const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -24,11 +23,11 @@ export default function LoginForm() {
   };
   const handleSubmit = () => {
     if (!email || !password) {
-      Alert.alert("Please fill in all fields.");
+      alert("Please fill in all fields.");
       return;
     }
-    // Handle login logic here
-    Alert.alert("Login Successful", `Username: ${username}\nEmail: ${email}`);
+    console.log(`Email: ${email}`);
+    alert("Login Successful");
   };
 
   return (

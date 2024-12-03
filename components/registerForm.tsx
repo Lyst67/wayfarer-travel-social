@@ -3,15 +3,15 @@ import {
   StyleSheet,
   TextInput,
   Pressable,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  View,
 } from "react-native";
 import React, { useState } from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import SignButton from "./signButton";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -24,14 +24,11 @@ export default function RegisterForm() {
   };
   const handleSubmit = () => {
     if (!username || !email || !password) {
-      Alert.alert("Please fill in all fields.");
+      alert("Please fill in all fields.");
       return;
     }
-    // Handle registration logic here
-    Alert.alert(
-      "Registration Successful",
-      `Username: ${username}\nEmail: ${email}`
-    );
+    console.log(`Username: ${username}  Email: ${email}`);
+    alert("Registration Successful");
   };
 
   return (
@@ -49,10 +46,10 @@ export default function RegisterForm() {
             />
             <TextInput
               style={styles.input}
-              keyboardType="email-address"
               placeholder="Адреса електронної пошти"
               value={email}
               onChangeText={setEmail}
+              keyboardType="email-address"
               autoCapitalize="none"
             />
             <SafeAreaView style={styles.passwordInput}>
@@ -74,7 +71,7 @@ export default function RegisterForm() {
               </Pressable>
             </SafeAreaView>
           </SafeAreaView>
-          <SignButton onPress={handleSubmit} label="Зареєстуватися" />
+          <SignButton onPress={handleSubmit} label="Увійти" />
         </KeyboardAvoidingView>
       </SafeAreaProvider>
     </TouchableWithoutFeedback>

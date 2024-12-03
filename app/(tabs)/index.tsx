@@ -13,8 +13,8 @@ export default function Index() {
         resizeMode="cover"
         style={styles.backgroundImage}
       >
-        <RegistrationScreen />
-        {/* <LoginScreen /> */}
+        {/* <RegistrationScreen /> */}
+        <LoginScreen />
       </ImageBackground>
     </View>
   );
