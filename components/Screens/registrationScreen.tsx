@@ -1,4 +1,10 @@
-import { StyleSheet, View, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import React, { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 
@@ -36,23 +42,25 @@ export default function RegistrationScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.photoContainer}>
-        <UserImage selectedImage={userImage} />
-        {addUserButton ? (
-          <AddUserImageButton onPress={pickUserImageAsync} />
-        ) : (
-          <DeleteImageButton onPress={deleteUserImage} />
-        )}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <View style={styles.photoContainer}>
+          <UserImage selectedImage={userImage} />
+          {addUserButton ? (
+            <AddUserImageButton onPress={pickUserImageAsync} />
+          ) : (
+            <DeleteImageButton onPress={deleteUserImage} />
+          )}
+        </View>
+        <Text style={styles.text}>Реєстрація</Text>
+        <RegisterForm />
+        <LinkToSignButton
+          label="Вже є акаунт? Увійти"
+          onPress={navigateToLOgIn}
+        />
+        <View style={styles.homeIndicator} />
       </View>
-      <Text style={styles.text}>Реєстрація</Text>
-      <RegisterForm />
-      <LinkToSignButton
-        label="Вже є акаунт? Увійти"
-        onPress={navigateToLOgIn}
-      />
-      <View style={styles.homeIndicator} />
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 const styles = StyleSheet.create({

@@ -5,8 +5,6 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Platform,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -31,43 +29,38 @@ export default function LoginForm() {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaProvider>
-        <KeyboardAvoidingView
-          behavior={Platform.OS == "ios" ? "padding" : "height"}
-        >
-          <SafeAreaView style={styles.container}>
+    <SafeAreaProvider>
+      <KeyboardAvoidingView
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
+      >
+        <SafeAreaView style={styles.container}>
+          <TextInput
+            style={styles.input}
+            placeholder="Адреса електронної пошти"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          <SafeAreaView style={styles.passwordInput}>
             <TextInput
               style={styles.input}
-              placeholder="Адреса електронної пошти"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
+              secureTextEntry={!showPassword}
+              textContentType="password"
+              placeholder="Пароль"
+              value={password}
+              onChangeText={setPassword}
             />
-            <SafeAreaView style={styles.passwordInput}>
-              <TextInput
-                style={styles.input}
-                secureTextEntry={!showPassword}
-                textContentType="password"
-                placeholder="Пароль"
-                value={password}
-                onChangeText={setPassword}
-              />
-              <Pressable
-                style={styles.passwordShow}
-                onPress={toggleShowPassword}
-              >
-                <Text style={styles.passwordShowText}>
-                  {showPassword ? "Сховати" : "Показати"}
-                </Text>
-              </Pressable>
-            </SafeAreaView>
+            <Pressable style={styles.passwordShow} onPress={toggleShowPassword}>
+              <Text style={styles.passwordShowText}>
+                {showPassword ? "Сховати" : "Показати"}
+              </Text>
+            </Pressable>
           </SafeAreaView>
-          <SignButton onPress={handleSubmit} label="Увійти" />
-        </KeyboardAvoidingView>
-      </SafeAreaProvider>
-    </TouchableWithoutFeedback>
+        </SafeAreaView>
+        <SignButton onPress={handleSubmit} label="Увійти" />
+      </KeyboardAvoidingView>
+    </SafeAreaProvider>
   );
 }
 const styles = StyleSheet.create({

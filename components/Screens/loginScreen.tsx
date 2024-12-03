@@ -1,4 +1,10 @@
-import { StyleSheet, View, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import React from "react";
 import LinkToSignButton from "../linkToSignButton";
 import LoginForm from "../loginForm";
@@ -9,15 +15,17 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Реєстрація</Text>
-      <LoginForm />
-      <LinkToSignButton
-        label="Немає акаунту? Зареєструватися"
-        onPress={navigateToLOgIn}
-      />
-      <View style={styles.homeIndicator} />
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Text style={styles.text}>Реєстрація</Text>
+        <LoginForm />
+        <LinkToSignButton
+          label="Немає акаунту? Зареєструватися"
+          onPress={navigateToLOgIn}
+        />
+        <View style={styles.homeIndicator} />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 const styles = StyleSheet.create({
