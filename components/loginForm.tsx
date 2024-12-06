@@ -10,9 +10,12 @@ import React, { useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import SignButton from "./signButton";
 
+// type Props = {
+//   handleFormSubmit: () => void;
+// };
+
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  // const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -20,6 +23,7 @@ export default function LoginForm() {
     setShowPassword((prev) => !prev);
   };
   const handleSubmit = () => {
+    //  const form = event.currentTarget;
     if (!email || !password) {
       alert("Please fill in all fields.");
       return;
@@ -27,7 +31,6 @@ export default function LoginForm() {
     console.log(`Email: ${email}`);
     alert("Login Successful");
   };
-
   return (
     <SafeAreaProvider>
       <KeyboardAvoidingView

@@ -6,22 +6,24 @@ import {
   Keyboard,
 } from "react-native";
 import React from "react";
-import LinkToSignButton from "../linkToSignButton";
-import LoginForm from "../loginForm";
+import { router } from "expo-router";
+import LoginForm from "./loginForm";
+import LinkToSignButton from "./linkToSignButton";
 
-export default function LoginScreen() {
-  const navigateToLOgIn = () => {
-    alert("Login");
+export default function LoginComponent() {
+  const navToRegister = () => {
+    router.push({ pathname: "/registerScreen", params: { user: "pavlo" } });
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Text style={styles.text}>Реєстрація</Text>
+        <Text style={styles.text}>Увійти</Text>
         <LoginForm />
         <LinkToSignButton
-          label="Немає акаунту? Зареєструватися"
-          onPress={navigateToLOgIn}
+          text="Немає акаунту?"
+          label="Зареєструватися"
+          onPress={navToRegister}
         />
         <View style={styles.homeIndicator} />
       </View>

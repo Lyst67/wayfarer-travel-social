@@ -1,20 +1,16 @@
-import LoginScreen from "@/components/Screens/loginScreen";
-import RegistrationScreen from "@/components/Screens/registrationScreen";
-import { StatusBar } from "expo-status-bar";
-import React from "react";
 import { View, StyleSheet, ImageBackground } from "react-native";
+import React from "react";
+import LoginComponent from "@/components/loginComponent";
 
-export default function Index() {
+export default function LoginScreen() {
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor="lightgreen" hidden={false} />
       <ImageBackground
         source={require("../../assets/images/photo-bg.png")}
         resizeMode="cover"
         style={styles.backgroundImage}
       >
-        <RegistrationScreen />
-        {/* <LoginScreen /> */}
+        <LoginComponent />
       </ImageBackground>
     </View>
   );
@@ -28,5 +24,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     // opacity: 0.7,
+  },
+  text: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 42,
+    lineHeight: 284,
+    fontWeight: "bold",
+    backgroundColor: "#000000c0",
   },
 });

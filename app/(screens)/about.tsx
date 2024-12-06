@@ -1,7 +1,6 @@
 import { Text, View, StyleSheet } from "react-native";
 import React, { useCallback } from "react";
 import { FlatList } from "react-native";
-import { StatusBar } from "expo-status-bar";
 
 const COURSES = [
   {
@@ -25,7 +24,6 @@ const COURSES = [
 export default function AboutScreen() {
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor="red"></StatusBar>
       <FlatList
         data={COURSES}
         keyExtractor={(item) => item.id}

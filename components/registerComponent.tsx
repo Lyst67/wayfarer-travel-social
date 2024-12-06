@@ -7,16 +7,17 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
+import { router, useNavigation } from "expo-router";
+import UserImage from "./userImage";
+import AddUserImageButton from "./addUserImageButton";
+import DeleteImageButton from "./deleteImageButton";
+import RegisterForm from "./registerForm";
+import LinkToSignButton from "./linkToSignButton";
 
-import RegisterForm from "../registerForm";
-import LinkToSignButton from "../linkToSignButton";
-import UserImage from "../userImage";
-import AddUserImageButton from "../addUserImageButton";
-import DeleteImageButton from "../deleteImageButton";
-
-export default function RegistrationScreen() {
+export default function RegisterComponent() {
   const [userImage, setUserImage] = useState<string | null>(null);
   const [addUserButton, setAddUserButton] = useState<boolean>(true);
+  // const navigation = useNavigation();
 
   const pickUserImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -37,8 +38,9 @@ export default function RegistrationScreen() {
     }
     setAddUserButton(true);
   };
-  const navigateToLOgIn = () => {
-    alert("Login");
+  const navToLogin = () => {
+    router.push("/loginScreen");
+    // navigation.navigate("about" as never);
   };
 
   return (
@@ -55,8 +57,9 @@ export default function RegistrationScreen() {
         <Text style={styles.text}>Реєстрація</Text>
         <RegisterForm />
         <LinkToSignButton
-          label="Вже є акаунт? Увійти"
-          onPress={navigateToLOgIn}
+          text="Вже є акаунт?"
+          label="Увійти"
+          onPress={navToLogin}
         />
         <View style={styles.homeIndicator} />
       </View>

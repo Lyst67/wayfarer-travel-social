@@ -1,12 +1,10 @@
-import { Stack } from "expo-router";
-import { setStatusBarStyle } from "expo-status-bar";
-import React, { useEffect } from "react";
+import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFonts } from "expo-font";
-import { StatusBar } from "expo-status-bar";
+import { Stack } from "expo-router";
 
 export default function RootLayout() {
-  const [fontsLloaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     "Inter-Black": require("../assets/fonts/Inter-Black.otf"),
     Times: require("../assets/fonts/TimesNewRoman.ttf"),
     Helvetica: require("../assets/fonts/Helvetica.ttf"),
@@ -14,21 +12,15 @@ export default function RootLayout() {
     "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
   });
 
-  useEffect(() => {
-    setTimeout(() => {
-      setStatusBarStyle("dark");
-    }, 0);
-  }, []);
-
-  if (!fontsLloaded) {
+  if (!fontsLoaded) {
     return null;
   }
 
+  // const unstable_settings = { initialRouteName: "loginScreen" };
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <StatusBar backgroundColor="lightgreen" hidden={false} />
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(screens)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" options={{}} />
       </Stack>
     </GestureHandlerRootView>
