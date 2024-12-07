@@ -2,7 +2,7 @@ import { Link, router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-export default function Home() {
+export default function PostsScreen() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Home Page</Text>
+      <Text style={styles.text}>PostsScreen</Text>
       <Link
         href={"/(screens)/loginScreen"}
         style={[

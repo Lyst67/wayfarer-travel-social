@@ -1,33 +1,43 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
-import React from "react";
+import { StyleSheet, View, Text } from "react-native";
+import React, { useState } from "react";
 import { router } from "expo-router";
 import LoginForm from "./loginForm";
 import LinkToSignButton from "./linkToSignButton";
 
+type UserData = {
+  username?: string;
+  email?: string;
+  password?: string;
+};
+
 export default function LoginComponent() {
+  const [formData, setFormData] = useState<UserData | undefined>();
+
   const navToRegister = () => {
-    router.push({ pathname: "/registerScreen", params: { user: "pavlo" } });
+    const userEmail = formData?.email;
+    router.push({
+      pathname: "/registerScreen",
+      params: { userEmail: userEmail },
+    });
+  };
+
+  const handleFormData = (data: UserData | undefined) => {
+    setFormData(data);
+    console.log("Received form data:", data);
+    router.navigate("/");
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Text style={styles.text}>Увійти</Text>
-        <LoginForm />
-        <LinkToSignButton
-          text="Немає акаунту?"
-          label="Зареєструватися"
-          onPress={navToRegister}
-        />
-        <View style={styles.homeIndicator} />
-      </View>
-    </TouchableWithoutFeedback>
+    <View style={styles.container}>
+      <Text style={styles.text}>Увійти</Text>
+      <LoginForm onSubmit={handleFormData} />
+      <LinkToSignButton
+        text="Немає акаунту?"
+        label="Зареєструватися"
+        onPress={navToRegister}
+      />
+      <View style={styles.homeIndicator} />
+    </View>
   );
 }
 const styles = StyleSheet.create({

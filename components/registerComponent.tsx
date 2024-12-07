@@ -1,23 +1,23 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import React, { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import UserImage from "./userImage";
 import AddUserImageButton from "./addUserImageButton";
 import DeleteImageButton from "./deleteImageButton";
 import RegisterForm from "./registerForm";
 import LinkToSignButton from "./linkToSignButton";
 
+type UserData = {
+  username?: string;
+  email?: string;
+  password?: string;
+};
+
 export default function RegisterComponent() {
   const [userImage, setUserImage] = useState<string | null>(null);
   const [addUserButton, setAddUserButton] = useState<boolean>(true);
-  // const navigation = useNavigation();
+  const [formData, setFormData] = useState<UserData | undefined>();
 
   const pickUserImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -38,32 +38,41 @@ export default function RegisterComponent() {
     }
     setAddUserButton(true);
   };
+
   const navToLogin = () => {
-    router.push("/loginScreen");
-    // navigation.navigate("about" as never);
+    const email = formData?.email;
+    const name = formData?.username;
+    router.push({
+      pathname: "/loginScreen",
+      params: { userEmail: email, userName: name },
+    });
+  };
+
+  const handleFormData = (data: UserData | undefined) => {
+    setFormData(data);
+    console.log("Received form data:", data);
+    router.navigate("/");
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <View style={styles.photoContainer}>
-          <UserImage selectedImage={userImage} />
-          {addUserButton ? (
-            <AddUserImageButton onPress={pickUserImageAsync} />
-          ) : (
-            <DeleteImageButton onPress={deleteUserImage} />
-          )}
-        </View>
-        <Text style={styles.text}>Реєстрація</Text>
-        <RegisterForm />
-        <LinkToSignButton
-          text="Вже є акаунт?"
-          label="Увійти"
-          onPress={navToLogin}
-        />
-        <View style={styles.homeIndicator} />
+    <View style={styles.container}>
+      <View style={styles.photoContainer}>
+        <UserImage selectedImage={userImage} />
+        {addUserButton ? (
+          <AddUserImageButton onPress={pickUserImageAsync} />
+        ) : (
+          <DeleteImageButton onPress={deleteUserImage} />
+        )}
       </View>
-    </TouchableWithoutFeedback>
+      <Text style={styles.text}>Реєстрація</Text>
+      <RegisterForm onSubmit={handleFormData} />
+      <LinkToSignButton
+        text="Вже є акаунт?"
+        label="Увійти"
+        onPress={navToLogin}
+      />
+      <View style={styles.homeIndicator} />
+    </View>
   );
 }
 const styles = StyleSheet.create({

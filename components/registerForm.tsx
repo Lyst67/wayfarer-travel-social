@@ -10,7 +10,11 @@ import React, { useState } from "react";
 import SignButton from "./signButton";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
-export default function RegisterForm() {
+type Props = {
+  onSubmit: (data: any) => void;
+};
+
+export default function RegisterForm({ onSubmit }: Props) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -25,7 +29,12 @@ export default function RegisterForm() {
       return;
     }
     console.log(`Username: ${username}  Email: ${email}`);
+    const formData = { username, email, password };
+    onSubmit(formData);
     alert("Registration Successful");
+    setUsername(""); // очищуємо поля форми
+    setEmail("");
+    setPassword("");
   };
 
   return (

@@ -16,7 +16,6 @@ export default function RootLayout() {
     return null;
   }
 
-  // const unstable_settings = { initialRouteName: "loginScreen" };
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack>

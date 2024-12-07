@@ -1,9 +1,10 @@
 import React from "react";
-import { Stack } from "expo-router";
+import { Tabs } from "expo-router";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function ScreensLayout() {
   return (
-    <Stack
+    <Tabs
       screenOptions={{
         headerStyle: {
           backgroundColor: "#FFF",
@@ -21,37 +22,48 @@ export default function ScreensLayout() {
         // },
       }}
     >
-      <Stack.Screen
+      <Tabs.Screen
         name="index"
         options={{
-          title: "Home Page",
-          //   tabBarIcon: ({ focused, color }) => (
-          //     <Ionicons
-          //       name={focused ? "home-sharp" : "home-outline"}
-          //       color={color}
-          //       size={24}
-          //     />
-          //   ),
+          title: "Публікації",
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons
+              name={focused ? "home-sharp" : "home-outline"}
+              color={color}
+              size={24}
+            />
+          ),
         }}
       />
-      <Stack.Screen name="loginScreen" options={{ headerShown: false }} />
-      <Stack.Screen name="registerScreen" options={{ headerShown: false }} />
-      <Stack.Screen
+      <Tabs.Screen
+        name="loginScreen"
+        options={{ headerShown: false, href: null }}
+      />
+      <Tabs.Screen
+        name="registerScreen"
+        options={{ headerShown: false, href: null }}
+      />
+      <Tabs.Screen
         name="createPostsScreen"
         options={{
           title: "Створити публікацію",
         }}
       />
-      <Stack.Screen name="postsScreen" options={{ title: "Публікації" }} />
-      <Stack.Screen name="commentsScreen" options={{ title: "Коментарі" }} />
-      <Stack.Screen name="profileScreen" options={{ headerShown: false }} />
-      <Stack.Screen name="gallery" options={{ headerShown: false }} />
+      <Tabs.Screen
+        name="commentsScreen"
+        options={{ title: "Коментарі", href: null }}
+      />
+      <Tabs.Screen name="profileScreen" options={{ headerShown: false }} />
+      <Tabs.Screen
+        name="gallery"
+        options={{ headerShown: false, href: null }}
+      />
 
-      <Stack.Screen
+      <Tabs.Screen
         name="about"
         options={{
           title: "About",
-
+          href: null,
           // tabBarIcon: ({ focused, color }) => (
           //   <Ionicons
           //     name={
@@ -63,6 +75,6 @@ export default function ScreensLayout() {
           // ),
         }}
       />
-    </Stack>
+    </Tabs>
   );
 }

@@ -1,18 +1,30 @@
-import { View, StyleSheet, ImageBackground } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  ImageBackground,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import React from "react";
 import LoginComponent from "@/components/loginComponent";
+// import { useGlobalSearchParams } from "expo-router";
 
 export default function LoginScreen() {
+  // const { userName, userEmail } = useGlobalSearchParams();
+
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require("../../assets/images/photo-bg.png")}
-        resizeMode="cover"
-        style={styles.backgroundImage}
-      >
-        <LoginComponent />
-      </ImageBackground>
-    </View>
+    <TouchableWithoutFeedback onPress={() => Keyboard?.dismiss}>
+      <View style={styles.container}>
+        <ImageBackground
+          source={require("../../assets/images/photo-bg.png")}
+          resizeMode="cover"
+          style={styles.backgroundImage}
+        >
+          <LoginComponent />
+        </ImageBackground>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 const styles = StyleSheet.create({
@@ -23,14 +35,5 @@ const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
     justifyContent: "center",
-    // opacity: 0.7,
-  },
-  text: {
-    color: "white",
-    textAlign: "center",
-    fontSize: 42,
-    lineHeight: 284,
-    fontWeight: "bold",
-    backgroundColor: "#000000c0",
   },
 });
