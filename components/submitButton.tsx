@@ -3,14 +3,24 @@ import React from "react";
 
 type Props = {
   label: string;
+  backgroundColor: string;
+  color: string;
   onPress: () => void;
 };
 
-export default function SignButton({ label, onPress }: Props) {
+export default function SubmitButton({
+  label,
+  backgroundColor,
+  color,
+  onPress,
+}: Props) {
   return (
     <>
-      <Pressable style={styles.button} onPress={onPress}>
-        <Text style={styles.buttonLabel}>{label}</Text>
+      <Pressable
+        style={[styles.button, { backgroundColor: backgroundColor }]}
+        onPress={onPress}
+      >
+        <Text style={[styles.buttonLabel, { color: color }]}>{label}</Text>
       </Pressable>
     </>
   );
@@ -21,12 +31,10 @@ const styles = StyleSheet.create({
     marginHorizontal: "auto",
     paddingHorizontal: 32,
     paddingVertical: 16,
-    backgroundColor: "#FF6C00",
     borderRadius: 100,
   },
   buttonLabel: {
     fontFamily: "Roboto",
-    color: "#fff",
     fontSize: 16,
     textAlign: "center",
   },

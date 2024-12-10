@@ -7,8 +7,8 @@ import {
   Platform,
 } from "react-native";
 import React, { useState } from "react";
-import SignButton from "./signButton";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import SubmitButton from "./submitButton";
 
 type Props = {
   onSubmit: (data: any) => void;
@@ -73,7 +73,12 @@ export default function RegisterForm({ onSubmit }: Props) {
             </Pressable>
           </SafeAreaView>
         </SafeAreaView>
-        <SignButton onPress={handleSubmit} label="Зареєструватись" />
+        <SubmitButton
+          onPress={handleSubmit}
+          backgroundColor="#FF6C00"
+          color="#fff"
+          label="Зареєструватись"
+        />
       </KeyboardAvoidingView>
     </SafeAreaProvider>
   );
