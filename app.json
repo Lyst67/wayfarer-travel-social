@@ -15,7 +15,7 @@
     },
     "ios": {
       "config": {
-        "googleMapsApiKey": "AIzaSyCvMVeczKtgywJhD_cN3lksCmcb0OrZu1w"
+        "googleMapsApiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_APIKEY_PROD"
       },
       "supportsTablet": true
     },
@@ -23,7 +23,7 @@
       "package": "com.nativeapp.app",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCvMVeczKtgywJhD_cN3lksCmcb0OrZu1w"
+          "apiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_APIKEY_PROD"
         }
       },
       "softwaresoftwareKeyboardLayoutMode": "pan",
@@ -31,9 +31,7 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
+      "permissions": ["android.permission.RECORD_AUDIO"]
     },
     "web": {
       "bundler": "metro",
@@ -41,11 +39,7 @@
       "favicon": "./assets/images/favicon.png",
       "backgroundColor": "#ffffff"
     },
-    "plugins": [
-      "expo-router",
-      "expo-font",
-      "expo-image-picker"
-    ],
+    "plugins": ["expo-router", "expo-font", "expo-image-picker"],
     "experiments": {
       "typedRoutes": true
     },
