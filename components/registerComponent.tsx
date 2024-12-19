@@ -71,20 +71,19 @@ export default function RegisterComponent() {
         label="Увійти"
         onPress={navToLogin}
       />
-      <View style={styles.homeIndicator} />
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: "auto",
     width: "100%",
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
     backgroundColor: "#fff",
     position: "absolute",
     bottom: 0,
+    paddingBottom: 66,
   },
   photoContainer: {
     width: 120,
@@ -103,13 +102,13 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     marginVertical: 32,
   },
-  homeIndicator: {
-    width: 134,
-    height: 5,
-    marginHorizontal: "auto",
-    marginTop: 66,
-    marginBottom: 8,
-    backgroundColor: "#212121",
-    borderRadius: 100,
-  },
+  // homeIndicator: {
+  //   width: 134,
+  //   height: 5,
+  //   marginHorizontal: "auto",
+  //   marginTop: 66,
+  //   marginBottom: 8,
+  //   backgroundColor: "#212121",
+  //   borderRadius: 100,
+  // },
 });

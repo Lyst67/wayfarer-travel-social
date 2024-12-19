@@ -2,6 +2,9 @@ import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
+import { Dimensions } from "react-native";
+
+const { width, height } = Dimensions.get("window");
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({

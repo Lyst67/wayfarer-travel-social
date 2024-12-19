@@ -3,11 +3,9 @@ import { router, Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { View } from "react-native";
 import TabsCentreButton from "@/components/tabsCentreButton";
 
 export const unstable_settings = {
-  // Ensure any route can link back to `/`
   initialRouteName: "index",
 };
 
@@ -32,8 +30,7 @@ export default function ScreensLayout() {
         tabBarActiveTintColor: "#FF6C00",
         tabBarShowLabel: false,
         tabBarStyle: {
-          height: "auto",
-          backgroundColor: "#FFF",
+          backgroundColor: "#FFFFF",
           paddingTop: 9,
           paddingBottom: 9,
         },
@@ -64,16 +61,25 @@ export default function ScreensLayout() {
       />
       <Tabs.Screen
         name="loginScreen"
-        options={{ headerShown: false, href: null }}
+        options={{
+          headerShown: false,
+          href: null,
+          tabBarStyle: { display: "none" },
+        }}
       />
       <Tabs.Screen
         name="registerScreen"
-        options={{ headerShown: false, href: null }}
+        options={{
+          headerShown: false,
+          href: null,
+          tabBarStyle: { display: "none" },
+        }}
       />
       <Tabs.Screen
         name="createPostsScreen"
         options={{
           title: "Створити публікацію",
+          tabBarStyle: { display: "none" },
           headerLeft: () => {
             return (
               <MaterialIcons
@@ -107,6 +113,25 @@ export default function ScreensLayout() {
               color={color}
             />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="mapScreen"
+        options={{
+          headerShown: true,
+          href: null,
+          tabBarStyle: { display: "none" },
+          headerLeft: () => {
+            return (
+              <MaterialIcons
+                backBehavior="history"
+                onPress={() => router.back()}
+                name="keyboard-backspace"
+                size={24}
+                color="#212121CC"
+              />
+            );
+          },
         }}
       />
       <Tabs.Screen

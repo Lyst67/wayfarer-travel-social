@@ -30,7 +30,7 @@ export default function LoginForm({ onSubmit }: Props) {
     const formData = { email, password };
     onSubmit(formData);
     alert("Login Successful");
-    setPassword(""); // очищуємо поля форми
+    setPassword("");
     setEmail("");
   };
   return (
@@ -42,6 +42,7 @@ export default function LoginForm({ onSubmit }: Props) {
           <TextInput
             style={styles.input}
             placeholder="Адреса електронної пошти"
+            placeholderTextColor="#BDBDBD"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -53,6 +54,7 @@ export default function LoginForm({ onSubmit }: Props) {
               secureTextEntry={!showPassword}
               textContentType="password"
               placeholder="Пароль"
+              placeholderTextColor="#BDBDBD"
               value={password}
               onChangeText={setPassword}
             />
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
     marginHorizontal: "auto",
   },
   input: {
-    color: "#BDBDBD",
+    color: "#212121",
     fontFamily: "Roboto",
     fontSize: 16,
     paddingHorizontal: 16,

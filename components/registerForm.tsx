@@ -46,12 +46,14 @@ export default function RegisterForm({ onSubmit }: Props) {
           <TextInput
             style={styles.input}
             placeholder={"Логін"}
+            placeholderTextColor="#BDBDBD"
             value={username}
             onChangeText={setUsername}
           />
           <TextInput
             style={styles.input}
             placeholder="Адреса електронної пошти"
+            placeholderTextColor="#BDBDBD"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -63,6 +65,7 @@ export default function RegisterForm({ onSubmit }: Props) {
               secureTextEntry={!showPassword}
               textContentType="password"
               placeholder="Пароль"
+              placeholderTextColor="#BDBDBD"
               value={password}
               onChangeText={setPassword}
             />
@@ -93,7 +96,7 @@ const styles = StyleSheet.create({
     marginHorizontal: "auto",
   },
   input: {
-    color: "#BDBDBD",
+    color: "#212121",
     fontFamily: "Roboto",
     fontSize: 16,
     paddingHorizontal: 16,

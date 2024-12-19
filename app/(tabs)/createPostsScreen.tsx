@@ -1,9 +1,18 @@
-import { View, Text, StyleSheet, TextInput, Image } from "react-native";
-import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import ImagePlaceholder from "@/components/imagePlaceholder";
 import SubmitButton from "@/components/submitButton";
 import Feather from "@expo/vector-icons/Feather";
 import TabsCentreButton from "@/components/tabsCentreButton";
+import { router } from "expo-router";
 
 export default function CreatePostsScreen() {
   const [isImageUpload, setIsImageUpload] = useState<boolean>(false);
@@ -11,7 +20,21 @@ export default function CreatePostsScreen() {
   const [postName, setPostName] = useState("");
   const [place, setPlace] = useState("");
 
-  const handlePost = () => {};
+  useEffect(() => {
+    if (postName && place) {
+      setIsPostData(true);
+    }
+  }, [postName, place]);
+  const handlePost = () => {
+    if (!postName || !place) {
+      alert("Please fill in all posts fields.");
+      return;
+    }
+    alert(`Postname: ${postName} and Place: ${place} are created!`);
+    router.navigate("/(tabs)/profileScreen");
+    setPostName("");
+    setPlace("");
+  };
 
   const photo = require("../../assets/images/landScape1.png");
 
@@ -31,7 +54,10 @@ export default function CreatePostsScreen() {
           {!isImageUpload ? "Завантажте фото" : "Редагувати фото"}
         </Text>
       </View>
-      <View style={styles.formContainer}>
+      <KeyboardAvoidingView
+        style={styles.formContainer}
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
+      >
         <TextInput
           style={styles.input}
           placeholder="Назва..."
@@ -42,11 +68,13 @@ export default function CreatePostsScreen() {
         />
         <View style={styles.mapForm}>
           <Feather
+            onPress={() => router.push("/mapScreen")}
             style={styles.mapImage}
             name="map-pin"
             size={24}
             color="#BDBDBD"
           />
+
           <TextInput
             style={[styles.input, { paddingLeft: 28 }]}
             placeholder="Місцевість..."
@@ -56,7 +84,7 @@ export default function CreatePostsScreen() {
             autoCapitalize="words"
           />
         </View>
-      </View>
+      </KeyboardAvoidingView>
       <SubmitButton
         backgroundColor={!isPostData ? "#F6F6F6" : "#FF6C00"}
         color={!isPostData ? "#BDBDBD" : "#FFF"}
@@ -83,6 +111,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   imageContainer: {
+    marginHorizontal: "auto",
     gap: 8,
   },
   postImage: {
@@ -107,7 +136,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  map: {
+    width: "100%",
+    height: "100%",
+  },
   mapImage: {
+    zIndex: 10,
     marginRight: -24,
   },
   imageText: {
@@ -116,6 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   formContainer: {
+    marginHorizontal: "auto",
     gap: 16,
   },
 

@@ -5,7 +5,7 @@ type Props = {
   label: string;
   backgroundColor: string;
   color: string;
-  onPress: () => void;
+  onPress?: () => void;
 };
 
 export default function SubmitButton({

@@ -1,36 +1,62 @@
 {
   "expo": {
     "name": "NativeApp",
-    "slug": "NativeApp",
+    "slug": "nativeapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "config": {
+        "googleMapsApiKey": "AIzaSyCvMVeczKtgywJhD_cN3lksCmcb0OrZu1w"
+      },
       "supportsTablet": true
     },
     "android": {
+      "package": "com.nativeapp.app",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCvMVeczKtgywJhD_cN3lksCmcb0OrZu1w"
+        }
+      },
       "softwaresoftwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "backgroundColor": "#ffffff"
     },
-    "plugins": ["expo-router", "expo-font", "expo-image-picker"],
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-image-picker"
+    ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "153b1216-9072-4e53-b706-35c53ed87912"
+      }
+    },
+    "owner": "lystopad"
   }
 }

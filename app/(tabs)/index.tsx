@@ -57,7 +57,7 @@ export default function PostsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "White",
+    backgroundColor: "#FFFFF",
     paddingTop: 32,
   },
   userContainer: {
@@ -73,22 +73,20 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "gray",
   },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 16,
+  },
   textName: {
     fontFamily: "Roboto",
     color: "#212121",
-
     fontSize: 13,
     fontWeight: 700,
   },
   textEmail: {
     fontFamily: "Roboto",
     color: "rgba(33, 33, 33, 0.80)",
-
     fontSize: 11,
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 16,
   },
 });
