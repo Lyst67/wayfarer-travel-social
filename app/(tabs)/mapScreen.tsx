@@ -1,31 +1,76 @@
 import { View, Text, StyleSheet, Platform } from "react-native";
-import React from "react";
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
+import React, { useEffect, useState } from "react";
+import MapView, {
+  LatLng,
+  Marker,
+  PROVIDER_GOOGLE,
+  Region,
+} from "react-native-maps";
+import * as Location from "expo-location";
+
+const initialRegion = {
+  latitude: 37.78825,
+  longitude: -122.4324,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
 
 export default function MapScreen() {
+  const [location, setLocation] = useState<LatLng | null>(null);
+  const [address, setAddress] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function getCurrentLocation() {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      let address = await Location.reverseGeocodeAsync(location.coords);
+
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+      setAddress(address[0].formattedAddress);
+      setLocation(coords);
+    }
+    getCurrentLocation();
+  }, []);
+
+  let text = "Waiting...";
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (address) {
+    text = JSON.stringify(address);
+  }
+  const mapRegion: Region = location
+    ? {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }
+    : initialRegion;
+
   return (
     <View style={styles.container}>
-      {/* <MapView
+      <MapView
         style={styles.map}
-        // initialRegion={region}
+        // initialRegion={initialRegion}
         provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
-        region={{
-          latitude: 37.78825,
-          longitude: -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
+        region={mapRegion}
+        showsUserLocation={true}
         mapType="standard"
         onMapReady={() => console.log("Map is ready")}
-        onRegionChange={() => console.log("Region change")}
-        // {...rest}
+        // onRegionChange={() => console.log("Region change")}
       >
-        <Marker
-          title="I am here"
-          coordinate={{ latitude: 37.78825, longitude: -122.4324 }}
-          description="Hello"
-        />
-      </MapView> */}
+        {location && (
+          <Marker title="I am here" coordinate={location} description={text} />
+        )}
+      </MapView>
     </View>
   );
 }

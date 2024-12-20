@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -39,7 +39,12 @@
       "favicon": "./assets/images/favicon.png",
       "backgroundColor": "#ffffff"
     },
-    "plugins": ["expo-router", "expo-font", "expo-image-picker"],
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-image-picker",
+      "expo-location"
+    ],
     "experiments": {
       "typedRoutes": true
     },
