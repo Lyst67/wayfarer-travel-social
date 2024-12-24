@@ -13,12 +13,15 @@ import SubmitButton from "@/components/submitButton";
 import Feather from "@expo/vector-icons/Feather";
 import TabsCentreButton from "@/components/tabsCentreButton";
 import { router } from "expo-router";
+import CameraComponent from "@/components/cameraComponent";
+import ImageViewer from "@/components/imageViwer";
 
 export default function CreatePostsScreen() {
   const [isImageUpload, setIsImageUpload] = useState<boolean>(false);
   const [isPostData, setIsPostData] = useState<boolean>(false);
   const [postName, setPostName] = useState("");
   const [place, setPlace] = useState("");
+  const [cameraPhoto, setCameraPhoto] = useState("");
 
   useEffect(() => {
     if (postName && place) {
@@ -42,7 +45,12 @@ export default function CreatePostsScreen() {
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <View style={styles.postImage}>
-          <Image source={photo} style={styles.image} />
+          {cameraPhoto ? (
+            <ImageViewer selectedImage={cameraPhoto} />
+          ) : (
+            <CameraComponent cameraPhoto={setCameraPhoto} />
+          )}
+          {/* <Image source={photo} style={styles.image} /> */}
           <View style={styles.imagePlaceholder}>
             <ImagePlaceholder
               backgroundColor={!isImageUpload ? "#FFFFFF" : "#ffffff4d"}

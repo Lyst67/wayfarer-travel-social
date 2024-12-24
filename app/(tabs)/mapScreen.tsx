@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Platform } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import React, { useEffect, useState } from "react";
 import MapView, {
   LatLng,
@@ -57,7 +57,7 @@ export default function MapScreen() {
 
   return (
     <View style={styles.container}>
-      <MapView
+      {/* <MapView
         style={styles.map}
         // initialRegion={initialRegion}
         provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
@@ -70,7 +70,7 @@ export default function MapScreen() {
         {location && (
           <Marker title="I am here" coordinate={location} description={text} />
         )}
-      </MapView>
+      </MapView> */}
     </View>
   );
 }
