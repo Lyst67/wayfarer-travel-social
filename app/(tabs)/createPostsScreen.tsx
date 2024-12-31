@@ -8,13 +8,13 @@ import {
   Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import ImagePlaceholder from "@/components/imagePlaceholder";
 import SubmitButton from "@/components/submitButton";
 import Feather from "@expo/vector-icons/Feather";
 import TabsCentreButton from "@/components/tabsCentreButton";
 import { router } from "expo-router";
 import CameraComponent from "@/components/cameraComponent";
 import ImageViewer from "@/components/imageViwer";
+import CameraPlaceholder from "@/components/cameraPlaceholder";
 
 export default function CreatePostsScreen() {
   const [isImageUpload, setIsImageUpload] = useState<boolean>(false);
@@ -28,15 +28,20 @@ export default function CreatePostsScreen() {
       setIsPostData(true);
     }
   }, [postName, place]);
+
   const handlePost = () => {
     if (!postName || !place) {
       alert("Please fill in all posts fields.");
       return;
     }
     alert(`Postname: ${postName} and Place: ${place} are created!`);
-    router.navigate("/(tabs)/profileScreen");
+    router.navigate("/");
     setPostName("");
     setPlace("");
+  };
+
+  const handleCameraPhoto = (url: string) => {
+    setCameraPhoto(url);
   };
 
   const photo = require("../../assets/images/landScape1.png");
@@ -48,15 +53,14 @@ export default function CreatePostsScreen() {
           {cameraPhoto ? (
             <ImageViewer selectedImage={cameraPhoto} />
           ) : (
-            <CameraComponent cameraPhoto={setCameraPhoto} />
+            <CameraComponent cameraPhoto={handleCameraPhoto} />
           )}
           {/* <Image source={photo} style={styles.image} /> */}
-          <View style={styles.imagePlaceholder}>
-            <ImagePlaceholder
-              backgroundColor={!isImageUpload ? "#FFFFFF" : "#ffffff4d"}
-              color={!isImageUpload ? "#BDBDBD" : "#FFFFFF"}
-            />
-          </View>
+          {cameraPhoto && (
+            <View style={styles.cameraPlaceholder}>
+              <CameraPlaceholder backgroundColor="#ffffff4d" color="#FFFFFF" />
+            </View>
+          )}
         </View>
         <Text style={styles.imageText}>
           {!isImageUpload ? "Завантажте фото" : "Редагувати фото"}
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  imagePlaceholder: {
+  cameraPlaceholder: {
     position: "absolute",
   },
   mapForm: {
@@ -168,7 +172,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 16,
     width: 343,
-    height: 34,
+    height: 50,
     borderBottomWidth: 1,
     borderBottomColor: "#E8E8E8",
   },

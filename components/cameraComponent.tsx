@@ -7,17 +7,15 @@ import {
   useCameraPermissions,
 } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
-import * as ImagePicker from "expo-image-picker";
-import { captureRef } from "react-native-view-shot";
+import CameraPlaceholder from "./cameraPlaceholder";
 
 type Props = {
-  cameraPhoto: React.Dispatch<React.SetStateAction<string>>;
+  cameraPhoto: (url: string) => void;
 };
 
 export default function CameraComponent({ cameraPhoto }: Props) {
   const [hasPermission, setHasPermission] = useCameraPermissions();
   const cameraRef = useRef<any>(null);
-  const cameraRef1 = useRef<any>(null);
   const [type, setType] = useState<CameraType>("back");
 
   if (!hasPermission) {
@@ -46,13 +44,9 @@ export default function CameraComponent({ cameraPhoto }: Props) {
         const camera = cameraRef.current;
         if (!camera) return;
         const { uri }: CameraCapturedPicture = await camera.takePictureAsync();
-        // const result = await captureRef(cameraRef, {
-        //   result: "tmpfile",
-        //   quality: 1,
-        //   format: "png",
-        // });
-        // const photo = await MediaLibrary.saveToLibraryAsync(uri);
-        const image = await MediaLibrary.createAssetAsync(uri);
+        const image: MediaLibrary.Asset = await MediaLibrary.createAssetAsync(
+          uri
+        );
         cameraPhoto(image.uri);
         console.log(`Result: ${image.uri}`);
       } catch (e) {
@@ -64,7 +58,7 @@ export default function CameraComponent({ cameraPhoto }: Props) {
   return (
     <View style={styles.container}>
       <CameraView style={styles.camera} facing={type} ref={cameraRef}>
-        <View style={styles.photoView}>
+        <View style={styles.cameraView}>
           <TouchableOpacity
             style={styles.flipContainer}
             onPress={handleCameraType}
@@ -86,9 +80,7 @@ export default function CameraComponent({ cameraPhoto }: Props) {
               handleAsyncTakePicture();
             }}
           >
-            <View style={styles.takePhotoOut}>
-              <View style={styles.takePhotoInner}></View>
-            </View>
+            <CameraPlaceholder color="#BDBDBD" backgroundColor="#FFFFFF" />
           </TouchableOpacity>
         </View>
       </CameraView>
@@ -97,40 +89,28 @@ export default function CameraComponent({ cameraPhoto }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  camera: { flex: 1 },
-  photoView: {
+  container: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  camera: {
+    flex: 1,
+  },
+  cameraView: {
     flex: 1,
     width: 343,
+    height: 240,
     backgroundColor: "transparent",
-    justifyContent: "flex-end",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   flipContainer: {
     flex: 1,
     alignItems: "center",
   },
-
-  button: { alignSelf: "center" },
-
-  takePhotoOut: {
-    borderWidth: 2,
-    borderColor: "white",
-    height: 50,
-    width: 50,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 50,
-  },
-
-  takePhotoInner: {
-    borderWidth: 2,
-    borderColor: "white",
-    height: 40,
-    width: 40,
-    backgroundColor: "white",
-    borderRadius: 50,
+  button: {
+    position: "absolute",
   },
   message: {
     textAlign: "center",

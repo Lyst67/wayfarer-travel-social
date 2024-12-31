@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
@@ -7,7 +7,7 @@ type Props = {
   color: string;
 };
 
-export default function ImagePlaceholder({ backgroundColor, color }: Props) {
+export default function CameraPlaceholder({ backgroundColor, color }: Props) {
   return (
     <View style={styles.container}>
       <View
