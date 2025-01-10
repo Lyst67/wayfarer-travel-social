@@ -1,10 +1,9 @@
 import {
-  Text,
   View,
   StyleSheet,
   ImageBackground,
-  TouchableWithoutFeedback,
   Keyboard,
+  Pressable,
 } from "react-native";
 import React from "react";
 import LoginComponent from "@/components/loginComponent";
@@ -14,7 +13,7 @@ export default function LoginScreen() {
   // const { userName, userEmail } = useGlobalSearchParams();
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard?.dismiss}>
+    <Pressable onPress={() => Keyboard?.dismiss} style={{ flex: 1 }}>
       <View style={styles.container}>
         <ImageBackground
           source={require("../../assets/images/photo-bg.png")}
@@ -24,7 +23,7 @@ export default function LoginScreen() {
           <LoginComponent />
         </ImageBackground>
       </View>
-    </TouchableWithoutFeedback>
+    </Pressable>
   );
 }
 const styles = StyleSheet.create({

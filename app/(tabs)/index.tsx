@@ -1,6 +1,6 @@
-import { Link, router } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 
 import ImageViewer from "@/components/imageViwer";
 import UserImage from "@/components/userImage";
@@ -8,11 +8,21 @@ import Feather from "@expo/vector-icons/Feather";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 
 export default function PostsScreen() {
+  const { latitude, longitude, place, currentLocation, postPhoto } =
+    useLocalSearchParams<{
+      latitude: string;
+      longitude: string;
+      place: string;
+      currentLocation: string;
+      postPhoto: string;
+    }>();
   const [mounted, setMounted] = useState(false);
   const [userImage, setUserImage] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>("Pavlo Lyst");
   const [userEmail, setUserEmail] = useState<string | null>("p_listopad@net");
-
+  // const imagePlace = () => {
+  //   !place ? "" : place;
+  // };
   // useEffect(() => {
   //   const timer = setTimeout(() => {
   //     setMounted(true);
@@ -42,11 +52,11 @@ export default function PostsScreen() {
         </View>
         <View style={styles.userPost}>
           <View style={styles.postImage}>
-            <ImageViewer selectedImage={""} />
+            <ImageViewer selectedImage={postPhoto} />
 
             {/* <Image source={photo} style={styles.image} /> */}
           </View>
-          <Text style={styles.imageText}>Ліс</Text>
+          <Text style={styles.imageText}>{place}</Text>
           <View style={styles.imageDescr}>
             <View
               style={{
@@ -56,10 +66,25 @@ export default function PostsScreen() {
                 alignItems: "center",
               }}
             >
-              <EvilIcons name="comment" size={32} color="#BDBDBD" />
+              <EvilIcons
+                name="comment"
+                size={32}
+                color="#BDBDBD"
+                onPress={() => router.push("/(tabs)/commentsScreen")}
+              />
               <Text style={[styles.imageText, { color: "#BDBDBD" }]}>0</Text>
             </View>
-            <View
+            <Pressable
+              onPress={() =>
+                router.push({
+                  pathname: "/mapScreen",
+                  params: {
+                    latitude: latitude,
+                    longitude: longitude,
+                    currentLocation: currentLocation,
+                  },
+                })
+              }
               style={{
                 // flex: 1,
                 gap: 4,
@@ -67,18 +92,13 @@ export default function PostsScreen() {
                 alignItems: "center",
               }}
             >
-              <Feather
-                onPress={() => router.push("/mapScreen")}
-                name="map-pin"
-                size={24}
-                color="#BDBDBD"
-              />
+              <Feather name="map-pin" size={24} color="#BDBDBD" />
               <Text
                 style={[styles.imageText, { textDecorationLine: "underline" }]}
               >
-                Ukraine
+                {currentLocation}
               </Text>
-            </View>
+            </Pressable>
           </View>
         </View>
       </View>

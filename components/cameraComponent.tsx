@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, Button } from "react-native";
+import { Text, View, StyleSheet, Button, Pressable } from "react-native";
 import {
   CameraCapturedPicture,
   CameraType,
@@ -59,10 +59,7 @@ export default function CameraComponent({ cameraPhoto }: Props) {
     <View style={styles.container}>
       <CameraView style={styles.camera} facing={type} ref={cameraRef}>
         <View style={styles.cameraView}>
-          <TouchableOpacity
-            style={styles.flipContainer}
-            onPress={handleCameraType}
-          >
+          <Pressable style={styles.flipContainer} onPress={handleCameraType}>
             <Text
               style={{
                 paddingLeft: 10,
@@ -73,15 +70,15 @@ export default function CameraComponent({ cameraPhoto }: Props) {
             >
               Flip Camera
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             style={styles.button}
             onPress={() => {
               handleAsyncTakePicture();
             }}
           >
             <CameraPlaceholder color="#BDBDBD" backgroundColor="#FFFFFF" />
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </CameraView>
     </View>

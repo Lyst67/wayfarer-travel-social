@@ -20,13 +20,13 @@
       "supportsTablet": true
     },
     "android": {
+      "softwaresoftwareKeyboardLayoutMode": "pan",
       "package": "com.nativeapp.app",
       "config": {
         "googleMaps": {
           "apiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_APIKEY_PROD"
         }
       },
-      "softwaresoftwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"

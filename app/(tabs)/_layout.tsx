@@ -29,6 +29,7 @@ export default function ScreensLayout() {
         headerShadowVisible: true,
         tabBarActiveTintColor: "#FF6C00",
         tabBarShowLabel: false,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: "#FFFFF",
           paddingTop: 9,
