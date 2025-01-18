@@ -5,6 +5,8 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Platform,
+  View,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -12,9 +14,10 @@ import SubmitButton from "./submitButton";
 
 type Props = {
   onSubmit: (data: any) => void;
+  loading: boolean;
 };
 
-export default function LoginForm({ onSubmit }: Props) {
+export default function LoginForm({ onSubmit, loading }: Props) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,6 +49,7 @@ export default function LoginForm({ onSubmit }: Props) {
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
+            textContentType="emailAddress"
             autoCapitalize="none"
           />
           <SafeAreaView style={styles.passwordInput}>
@@ -65,12 +69,18 @@ export default function LoginForm({ onSubmit }: Props) {
             </Pressable>
           </SafeAreaView>
         </SafeAreaView>
-        <SubmitButton
-          onPress={handleSubmit}
-          backgroundColor="#FF6C00"
-          color="#fff"
-          label="Увійти"
-        />
+        {loading ? (
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <ActivityIndicator size="large" />
+          </View>
+        ) : (
+          <SubmitButton
+            onPress={handleSubmit}
+            backgroundColor="#FF6C00"
+            color="#fff"
+            label="Увійти"
+          />
+        )}
       </KeyboardAvoidingView>
     </SafeAreaProvider>
   );

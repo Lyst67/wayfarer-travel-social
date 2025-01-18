@@ -2,7 +2,6 @@ import {
   View,
   ImageBackground,
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
@@ -14,7 +13,7 @@ export default function RegisterScreen() {
   // const { userEmail } = useGlobalSearchParams();
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard?.dismiss}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <ImageBackground
           source={require("../../assets/images/photo-bg.png")}

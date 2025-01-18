@@ -1,6 +1,8 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Alert } from "react-native";
 import React, { useState } from "react";
 import { router } from "expo-router";
+import auth from "@react-native-firebase/auth";
+
 import LoginForm from "./loginForm";
 import LinkToSignButton from "./linkToSignButton";
 
@@ -12,6 +14,7 @@ type UserData = {
 
 export default function LoginComponent() {
   const [formData, setFormData] = useState<UserData | undefined>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navToRegister = () => {
     const userEmail = formData?.email;
@@ -21,16 +24,32 @@ export default function LoginComponent() {
     });
   };
 
-  const handleFormData = (data: UserData | undefined) => {
+  const handleLogin = async (data: UserData | undefined) => {
+    setLoading(true);
     setFormData(data);
-    console.log("Received form data:", data);
-    router.navigate("/");
+    const email = data?.email;
+    const password = data?.password;
+    if (email && password) {
+      try {
+        const responce = await auth().signInWithEmailAndPassword(
+          email,
+          password
+        );
+        console.log(responce);
+        Alert.alert(`Hello! ${responce.user.email}`);
+      } catch (err: any) {
+        console.log(err.message);
+        Alert.alert("Error:" + err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Увійти</Text>
-      <LoginForm onSubmit={handleFormData} />
+      <LoginForm onSubmit={handleLogin} loading={loading} />
       <LinkToSignButton
         text="Немає акаунту?"
         label="Зареєструватися"
@@ -59,13 +78,4 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     marginVertical: 32,
   },
-  // homeIndicator: {
-  //   width: 134,
-  //   height: 5,
-  //   marginHorizontal: "auto",
-  //   marginTop: 132,
-  //   marginBottom: 8,
-  //   backgroundColor: "#212121",
-  //   borderRadius: 100,
-  // },
 });

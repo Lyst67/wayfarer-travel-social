@@ -5,6 +5,8 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
+  View,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -12,9 +14,10 @@ import SubmitButton from "./submitButton";
 
 type Props = {
   onSubmit: (data: any) => void;
+  loading: boolean;
 };
 
-export default function RegisterForm({ onSubmit }: Props) {
+export default function RegisterForm({ onSubmit, loading }: Props) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -28,11 +31,10 @@ export default function RegisterForm({ onSubmit }: Props) {
       alert("Please fill in all fields.");
       return;
     }
-    console.log(`Username: ${username}  Email: ${email}`);
+    // console.log(`Username: ${username}  Email: ${email}`);
     const formData = { username, email, password };
     onSubmit(formData);
-    alert("Registration Successful");
-    setUsername(""); // очищуємо поля форми
+    setUsername("");
     setEmail("");
     setPassword("");
   };
@@ -48,6 +50,7 @@ export default function RegisterForm({ onSubmit }: Props) {
             placeholder={"Логін"}
             placeholderTextColor="#BDBDBD"
             value={username}
+            textContentType="name"
             onChangeText={setUsername}
           />
           <TextInput
@@ -56,6 +59,7 @@ export default function RegisterForm({ onSubmit }: Props) {
             placeholderTextColor="#BDBDBD"
             value={email}
             onChangeText={setEmail}
+            textContentType="emailAddress"
             keyboardType="email-address"
             autoCapitalize="none"
           />
@@ -76,12 +80,18 @@ export default function RegisterForm({ onSubmit }: Props) {
             </Pressable>
           </SafeAreaView>
         </SafeAreaView>
-        <SubmitButton
-          onPress={handleSubmit}
-          backgroundColor="#FF6C00"
-          color="#fff"
-          label="Зареєструватись"
-        />
+        {loading ? (
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <ActivityIndicator size="large" />
+          </View>
+        ) : (
+          <SubmitButton
+            onPress={handleSubmit}
+            backgroundColor="#FF6C00"
+            color="#fff"
+            label="Зареєструватись"
+          />
+        )}
       </KeyboardAvoidingView>
     </SafeAreaProvider>
   );

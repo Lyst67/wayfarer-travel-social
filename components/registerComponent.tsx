@@ -1,12 +1,12 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Alert, Button } from "react-native";
 import React, { useState } from "react";
-import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
-import UserImage from "./userImage";
-import AddUserImageButton from "./addUserImageButton";
-import DeleteImageButton from "./deleteImageButton";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
+import db from "@react-native-firebase/database";
+
 import RegisterForm from "./registerForm";
 import LinkToSignButton from "./linkToSignButton";
+import UserImageComponent from "./userImageComponent";
 
 type UserData = {
   username?: string;
@@ -15,29 +15,8 @@ type UserData = {
 };
 
 export default function RegisterComponent() {
-  const [userImage, setUserImage] = useState<string | null>(null);
-  const [addUserButton, setAddUserButton] = useState<boolean>(true);
   const [formData, setFormData] = useState<UserData | undefined>();
-
-  const pickUserImageAsync = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      quality: 1,
-    });
-    if (!result.canceled) {
-      setUserImage(result.assets[0].uri);
-      setAddUserButton(false);
-    } else {
-      alert("You did not select any image.");
-    }
-  };
-  const deleteUserImage = () => {
-    if (userImage !== null) {
-      setUserImage(null);
-    }
-    setAddUserButton(true);
-  };
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navToLogin = () => {
     const email = formData?.email;
@@ -48,24 +27,45 @@ export default function RegisterComponent() {
     });
   };
 
-  const handleFormData = (data: UserData | undefined) => {
+  const createProfile = async (responce: FirebaseAuthTypes.UserCredential) => {
+    console.log(formData?.username);
+    await db()
+      .ref(`/users${responce.user.uid}`)
+      .set({ name: formData?.username });
+  };
+
+  const handleRegister = async (data: UserData | undefined) => {
+    setLoading(true);
     setFormData(data);
-    console.log("Received form data:", data);
-    router.navigate("/");
+    // console.log("Received form data:", data);
+    const email = data?.email;
+    const password = data?.password;
+    if (email && password) {
+      try {
+        const responce = await auth().createUserWithEmailAndPassword(
+          email,
+          password
+        );
+        // console.log(responce);
+        console.log(responce.user.email, responce.user.uid);
+        if (responce.user) {
+          await createProfile(responce);
+          // router.navigate("/");
+        }
+      } catch (err: any) {
+        console.log(err.message);
+        Alert.alert("Error:" + err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.photoContainer}>
-        <UserImage selectedImage={userImage} />
-        {addUserButton ? (
-          <AddUserImageButton onPress={pickUserImageAsync} />
-        ) : (
-          <DeleteImageButton onPress={deleteUserImage} />
-        )}
-      </View>
+      <UserImageComponent />
       <Text style={styles.text}>Реєстрація</Text>
-      <RegisterForm onSubmit={handleFormData} />
+      <RegisterForm onSubmit={handleRegister} loading={loading} />
       <LinkToSignButton
         text="Вже є акаунт?"
         label="Увійти"
@@ -102,13 +102,4 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     marginVertical: 32,
   },
-  // homeIndicator: {
-  //   width: 134,
-  //   height: 5,
-  //   marginHorizontal: "auto",
-  //   marginTop: 66,
-  //   marginBottom: 8,
-  //   backgroundColor: "#212121",
-  //   borderRadius: 100,
-  // },
 });

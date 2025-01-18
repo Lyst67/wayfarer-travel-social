@@ -14,13 +14,14 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "bundleIdentifier": "com.nativeapp.app",
       "config": {
         "googleMapsApiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_APIKEY_PROD"
       },
       "supportsTablet": true
     },
     "android": {
-      "softwaresoftwareKeyboardLayoutMode": "pan",
+      "googleServicesFile": "./google-services.json",
       "package": "com.nativeapp.app",
       "config": {
         "googleMaps": {
@@ -44,6 +45,16 @@
       "expo-font",
       "expo-image-picker",
       "expo-location",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
       [
         "expo-camera",
         {

@@ -1,6 +1,7 @@
 import { Link, router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 
 import ImageViewer from "@/components/imageViwer";
 import UserImage from "@/components/userImage";
@@ -16,25 +17,25 @@ export default function PostsScreen() {
       currentLocation: string;
       postPhoto: string;
     }>();
-  const [mounted, setMounted] = useState(false);
   const [userImage, setUserImage] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>("Pavlo Lyst");
   const [userEmail, setUserEmail] = useState<string | null>("p_listopad@net");
-  // const imagePlace = () => {
-  //   !place ? "" : place;
-  // };
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setMounted(true);
-  //   }, 0);
-  //   return () => clearTimeout(timer);
-  // }, []);
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
+  const [initializing, setInitializing] = useState<boolean>(true);
+
+  const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
+    console.log("User:", user);
+    setUser(user);
+    if (initializing) {
+      setInitializing(false);
+    }
+  };
 
   // useEffect(() => {
-  //   if (mounted) {
-  //     router.navigate("/loginScreen");
-  //   }
-  // }, [mounted]);
+  //   const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+  //   return subscriber;
+  // }, []);
+
   const photo = require("../../assets/images/userimage.png");
 
   return (
@@ -104,7 +105,7 @@ export default function PostsScreen() {
       </View>
 
       <Link
-        href={"/(tabs)/loginScreen"}
+        href={"/(tabs)/registerScreen"}
         style={[
           styles.textEmail,
           {
@@ -116,7 +117,7 @@ export default function PostsScreen() {
           },
         ]}
       >
-        To Login
+        To Register
       </Link>
     </View>
   );
