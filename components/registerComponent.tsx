@@ -27,11 +27,11 @@ export default function RegisterComponent() {
     });
   };
 
-  const createProfile = async (responce: FirebaseAuthTypes.UserCredential) => {
-    console.log(formData?.username);
-    await db()
-      .ref(`/users${responce.user.uid}`)
-      .set({ name: formData?.username });
+  const createProfile = async (
+    responce: FirebaseAuthTypes.UserCredential,
+    userName: string | undefined
+  ) => {
+    await db().ref(`/users/${responce.user.uid}`).set({ name: userName });
   };
 
   const handleRegister = async (data: UserData | undefined) => {
@@ -40,16 +40,16 @@ export default function RegisterComponent() {
     // console.log("Received form data:", data);
     const email = data?.email;
     const password = data?.password;
+    const userName = data?.username;
     if (email && password) {
       try {
         const responce = await auth().createUserWithEmailAndPassword(
           email,
           password
         );
-        // console.log(responce);
-        console.log(responce.user.email, responce.user.uid);
+        console.log(responce.user.email, userName);
         if (responce.user) {
-          await createProfile(responce);
+          await createProfile(responce, userName);
           // router.navigate("/");
         }
       } catch (err: any) {
