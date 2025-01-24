@@ -6,7 +6,11 @@ import UserImage from "./userImage";
 import AddUserImageButton from "./addUserImageButton";
 import DeleteImageButton from "./deleteImageButton";
 
-export default function UserImageComponent() {
+export default function UserImageComponent({
+  currentUserImage,
+}: {
+  currentUserImage: React.Dispatch<React.SetStateAction<string | null>>;
+}) {
   const [addUserButton, setAddUserButton] = useState<boolean>(true);
   const [userImage, setUserImage] = useState<string | null>(null);
 
@@ -18,6 +22,7 @@ export default function UserImageComponent() {
     });
     if (!result.canceled) {
       setUserImage(result.assets[0].uri);
+      currentUserImage(result.assets[0].uri);
       setAddUserButton(false);
     } else {
       alert("You did not select any image.");

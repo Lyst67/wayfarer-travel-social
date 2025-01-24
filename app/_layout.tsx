@@ -5,8 +5,8 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { Dimensions } from "react-native";
 import { Provider } from "react-redux";
-// import { PersistGate } from "redux-persist/integration/react";
-// import store from "./store";
+import { PersistGate } from "redux-persist/integration/react";
+import store from "./store";
 
 const { width, height } = Dimensions.get("window");
 
@@ -24,18 +24,18 @@ export default function RootLayout() {
   }
 
   return (
-    // <Provider store={store.store}>
-    //   <PersistGate
-    //     loading={<Text>Loading...</Text>}
-    //     persistor={store.persistor}
-    //   >
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" options={{}} />
-      </Stack>
-    </GestureHandlerRootView>
-    //   </PersistGate>
-    // </Provider>
+    <Provider store={store.store}>
+      <PersistGate
+        loading={<Text>Loading...</Text>}
+        persistor={store.persistor}
+      >
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" options={{}} />
+          </Stack>
+        </GestureHandlerRootView>
+      </PersistGate>
+    </Provider>
   );
 }

@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { router } from "expo-router";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import db from "@react-native-firebase/database";
+import { useDispatch } from "react-redux";
+import { register } from "@/app/features/user/userSlice";
 
 import RegisterForm from "./registerForm";
 import LinkToSignButton from "./linkToSignButton";
@@ -14,16 +16,21 @@ type UserData = {
   password?: string;
 };
 
-export default function RegisterComponent() {
+export default function RegisterComponent({
+  userEmail,
+}: {
+  userEmail: string;
+}) {
+  const [userImage, setUserImage] = useState<string | null>(null);
   const [formData, setFormData] = useState<UserData | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   const navToLogin = () => {
     const email = formData?.email;
-    const name = formData?.username;
     router.push({
       pathname: "/loginScreen",
-      params: { userEmail: email, userName: name },
+      params: { userEmail: email },
     });
   };
 
@@ -37,7 +44,6 @@ export default function RegisterComponent() {
   const handleRegister = async (data: UserData | undefined) => {
     setLoading(true);
     setFormData(data);
-    // console.log("Received form data:", data);
     const email = data?.email;
     const password = data?.password;
     const userName = data?.username;
@@ -47,10 +53,23 @@ export default function RegisterComponent() {
           email,
           password
         );
-        console.log(responce.user.email, userName);
         if (responce.user) {
+          await auth().currentUser?.updateProfile({
+            displayName: `${userName}`,
+            photoURL: `${userImage}`,
+          });
           await createProfile(responce, userName);
-          // router.navigate("/");
+          const userId = responce.user.uid;
+          dispatch(
+            register({
+              email: email,
+              userName: userName,
+              userImage: userImage,
+              userId: userId,
+            })
+          );
+          Alert.alert(`Hello! ${userName}`);
+          router.replace("/");
         }
       } catch (err: any) {
         console.log(err.message);
@@ -63,9 +82,13 @@ export default function RegisterComponent() {
 
   return (
     <View style={styles.container}>
-      <UserImageComponent />
+      <UserImageComponent currentUserImage={setUserImage} />
       <Text style={styles.text}>Реєстрація</Text>
-      <RegisterForm onSubmit={handleRegister} loading={loading} />
+      <RegisterForm
+        onSubmit={handleRegister}
+        loading={loading}
+        userEmail={userEmail}
+      />
       <LinkToSignButton
         text="Вже є акаунт?"
         label="Увійти"

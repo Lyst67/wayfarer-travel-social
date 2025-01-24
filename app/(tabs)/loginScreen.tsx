@@ -7,10 +7,10 @@ import {
 } from "react-native";
 import React from "react";
 import LoginComponent from "@/components/loginComponent";
-// import { useGlobalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 
 export default function LoginScreen() {
-  // const { userName, userEmail } = useGlobalSearchParams();
+  const { userEmail } = useLocalSearchParams<{ userEmail: string }>();
 
   return (
     <Pressable onPress={() => Keyboard?.dismiss} style={{ flex: 1 }}>
@@ -20,7 +20,7 @@ export default function LoginScreen() {
           resizeMode="cover"
           style={styles.backgroundImage}
         >
-          <LoginComponent />
+          <LoginComponent userEmail={userEmail} />
         </ImageBackground>
       </View>
     </Pressable>

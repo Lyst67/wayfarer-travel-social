@@ -1,16 +1,27 @@
 import React from "react";
 import { router, Tabs } from "expo-router";
+import auth from "@react-native-firebase/auth";
+import { useDispatch } from "react-redux";
+
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import TabsCentreButton from "@/components/tabsCentreButton";
+import { logOut } from "../features/user/userSlice";
 
 export const unstable_settings = {
   initialRouteName: "index",
 };
 
 export default function ScreensLayout() {
-  const handleLogOut = () => {};
+  const dispatch = useDispatch();
+  const handleLogOut = () => {
+    auth()
+      .signOut()
+      .then(() => console.log("User signed out!"))
+      .catch((error: any) => console.error("Error signing out: ", error));
+    dispatch(logOut());
+  };
 
   return (
     <Tabs

@@ -5,6 +5,8 @@ import auth from "@react-native-firebase/auth";
 
 import LoginForm from "./loginForm";
 import LinkToSignButton from "./linkToSignButton";
+import { useDispatch } from "react-redux";
+import { login } from "@/app/features/user/userSlice";
 
 type UserData = {
   username?: string;
@@ -12,15 +14,16 @@ type UserData = {
   password?: string;
 };
 
-export default function LoginComponent() {
+export default function LoginComponent({ userEmail }: { userEmail: string }) {
   const [formData, setFormData] = useState<UserData | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   const navToRegister = () => {
-    const userEmail = formData?.email;
+    const email = formData?.email;
     router.push({
       pathname: "/registerScreen",
-      params: { userEmail: userEmail },
+      params: { userEmail: email },
     });
   };
 
@@ -35,8 +38,19 @@ export default function LoginComponent() {
           email,
           password
         );
-        console.log(responce);
-        Alert.alert(`Hello! ${responce.user.email}`);
+        const userName = responce.user.displayName;
+        const userImage = responce.user.photoURL;
+        const userId = responce.user.uid;
+        dispatch(
+          login({
+            email: email,
+            userName: userName,
+            userImage: userImage,
+            userId: userId,
+          })
+        );
+        Alert.alert(`Hello! ${userName}`);
+        router.replace("/");
       } catch (err: any) {
         console.log(err.message);
         Alert.alert("Error:" + err.message);
@@ -49,7 +63,11 @@ export default function LoginComponent() {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Увійти</Text>
-      <LoginForm onSubmit={handleLogin} loading={loading} />
+      <LoginForm
+        onSubmit={handleLogin}
+        loading={loading}
+        userEmail={userEmail}
+      />
       <LinkToSignButton
         text="Немає акаунту?"
         label="Зареєструватися"

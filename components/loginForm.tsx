@@ -8,19 +8,25 @@ import {
   View,
   ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import SubmitButton from "./submitButton";
 
 type Props = {
   onSubmit: (data: any) => void;
   loading: boolean;
+  userEmail?: string;
 };
 
-export default function LoginForm({ onSubmit, loading }: Props) {
+export default function LoginForm({ onSubmit, loading, userEmail }: Props) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  useEffect(() => {
+    if (!email && userEmail) {
+      setEmail(userEmail);
+    }
+  }, []);
 
   const toggleShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -32,10 +38,10 @@ export default function LoginForm({ onSubmit, loading }: Props) {
     }
     const formData = { email, password };
     onSubmit(formData);
-    alert("Login Successful");
     setPassword("");
     setEmail("");
   };
+
   return (
     <SafeAreaProvider>
       <KeyboardAvoidingView

@@ -1,12 +1,31 @@
-import { Link, router, useLocalSearchParams } from "expo-router";
+import { router, Routes, useLocalSearchParams, useSegments } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+  Button,
+} from "react-native";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
+import db, {
+  firebase,
+  FirebaseDatabaseTypes,
+} from "@react-native-firebase/database";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectEmail,
+  selectName,
+  selectUserImage,
+} from "../features/user/userSelectors";
+import { refresh } from "../features/user/userSlice";
 
 import ImageViewer from "@/components/imageViwer";
 import UserImage from "@/components/userImage";
 import Feather from "@expo/vector-icons/Feather";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 export default function PostsScreen() {
   const { latitude, longitude, place, currentLocation, postPhoto } =
@@ -17,34 +36,70 @@ export default function PostsScreen() {
       currentLocation: string;
       postPhoto: string;
     }>();
-  const [userImage, setUserImage] = useState<string | null>(null);
-  const [userName, setUserName] = useState<string | null>("Pavlo Lyst");
-  const [userEmail, setUserEmail] = useState<string | null>("p_listopad@net");
+  const dispatch = useDispatch();
+  const userName = useSelector(selectName);
+  const userEmail = useSelector(selectEmail);
+  const userImage = useSelector(selectUserImage);
+  const segments = useSegments<Routes>();
+  const [hasMounted, setHasMounted] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
   const [initializing, setInitializing] = useState<boolean>(true);
 
   const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
-    console.log("User:", user);
+    // console.log("User:", user);
     setUser(user);
+    if ((user && !userName) || !userEmail) {
+      dispatch(
+        refresh({
+          email: user?.email,
+          userName: user?.displayName,
+          userImage: user?.photoURL,
+          userId: user?.uid,
+        })
+      );
+    }
     if (initializing) {
       setInitializing(false);
     }
   };
 
-  // useEffect(() => {
-  //   const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-  //   return subscriber;
-  // }, []);
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  }, []);
 
-  const photo = require("../../assets/images/userimage.png");
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasMounted) return;
+    const currentSegment = segments[0] === "(tabs)";
+    if (!user && currentSegment) {
+      router.replace("/(tabs)/loginScreen");
+    } else {
+      return;
+    }
+  }, [user, hasMounted]);
+
+  if (initializing) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.userPostContainer}>
         <View style={styles.userContainer}>
           <View style={styles.photoContainer}>
-            <UserImage selectedImage={userImage} />
-            <Image source={photo} style={styles.userImage} />
+            {!userImage ? (
+              <FontAwesome5 name="user" size={44} color="lightgrey" />
+            ) : (
+              <UserImage selectedImage={userImage} />
+            )}
           </View>
           <View>
             <Text style={styles.textName}>{userName}</Text>
@@ -54,8 +109,6 @@ export default function PostsScreen() {
         <View style={styles.userPost}>
           <View style={styles.postImage}>
             <ImageViewer selectedImage={postPhoto} />
-
-            {/* <Image source={photo} style={styles.image} /> */}
           </View>
           <Text style={styles.imageText}>{place}</Text>
           <View style={styles.imageDescr}>
@@ -103,22 +156,27 @@ export default function PostsScreen() {
           </View>
         </View>
       </View>
-
-      <Link
-        href={"/(tabs)/registerScreen"}
-        style={[
-          styles.textEmail,
-          {
-            textDecorationLine: "underline",
-            backgroundColor: "darkseagreen",
-            fontSize: 24,
-            textAlign: "center",
-            marginTop: "auto",
-          },
-        ]}
-      >
-        To Register
-      </Link>
+      <Button
+        title="Get users"
+        onPress={async () => {
+          db()
+            .ref("/users")
+            .once("value")
+            .then((snapshot) => {
+              console.log("User data: ", snapshot.val());
+            });
+        }}
+      />
+      <Button
+        title="Get users"
+        onPress={() => {
+          db()
+            .ref("users")
+            .on("value", (snapshot) => {
+              console.log("Users:", snapshot.val());
+            });
+        }}
+      />
     </View>
   );
 }
@@ -140,15 +198,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   photoContainer: {
+    justifyContent: "center",
+    alignItems: "center",
     width: 60,
     height: 60,
     borderRadius: 16,
     backgroundColor: "gray",
-  },
-  userImage: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 16,
+    overflow: "hidden",
   },
   textName: {
     fontFamily: "Roboto",

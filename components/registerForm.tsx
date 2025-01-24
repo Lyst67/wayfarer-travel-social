@@ -8,20 +8,26 @@ import {
   ActivityIndicator,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import SubmitButton from "./submitButton";
 
 type Props = {
   onSubmit: (data: any) => void;
   loading: boolean;
+  userEmail?: string;
 };
 
-export default function RegisterForm({ onSubmit, loading }: Props) {
+export default function RegisterForm({ onSubmit, loading, userEmail }: Props) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  useEffect(() => {
+    if (!email && userEmail) {
+      setEmail(userEmail);
+    }
+  }, []);
 
   const toggleShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -31,7 +37,6 @@ export default function RegisterForm({ onSubmit, loading }: Props) {
       alert("Please fill in all fields.");
       return;
     }
-    // console.log(`Username: ${username}  Email: ${email}`);
     const formData = { username, email, password };
     onSubmit(formData);
     setUsername("");

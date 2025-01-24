@@ -7,10 +7,10 @@ import {
 } from "react-native";
 import React from "react";
 import RegisterComponent from "@/components/registerComponent";
-// import { useGlobalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 
 export default function RegisterScreen() {
-  // const { userEmail } = useGlobalSearchParams();
+  const { userEmail } = useLocalSearchParams<{ userEmail: string }>();
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -20,7 +20,7 @@ export default function RegisterScreen() {
           resizeMode="cover"
           style={styles.backgroundImage}
         >
-          <RegisterComponent />
+          <RegisterComponent userEmail={userEmail} />
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>
