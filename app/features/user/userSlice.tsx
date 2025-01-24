@@ -20,19 +20,19 @@ const userSlice = createSlice({
     register: (state, action) => {
       state.email = action.payload.email;
       state.userName = action.payload.userName;
-      state.userImage = action.payload.userimage;
+      state.userImage = action.payload.userImage;
       state.userId = action.payload.userId;
     },
     login: (state, action) => {
       state.email = action.payload.email;
       state.userName = action.payload.userName;
-      state.userImage = action.payload.userimage;
+      state.userImage = action.payload.userImage;
       state.userId = action.payload.userId;
     },
     refresh: (state, action) => {
       state.email = action.payload.email;
       state.userName = action.payload.userName;
-      state.userImage = action.payload.userimage;
+      state.userImage = action.payload.userImage;
       state.userId = action.payload.userId;
     },
     logOut: (state) => {
