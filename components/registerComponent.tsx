@@ -34,12 +34,12 @@ export default function RegisterComponent({
     });
   };
 
-  const createProfile = async (
-    responce: FirebaseAuthTypes.UserCredential,
-    userName: string | undefined
-  ) => {
-    await db().ref(`/users/${responce.user.uid}`).set({ name: userName });
-  };
+  // const createProfile = async (
+  //   responce: FirebaseAuthTypes.UserCredential,
+  //   userName: string | undefined
+  // ) => {
+  //   await db().ref(`/users/${responce.user.uid}`).set({ name: userName });
+  // };
 
   const handleRegister = async (data: UserData | undefined) => {
     setLoading(true);
@@ -58,7 +58,7 @@ export default function RegisterComponent({
             displayName: `${userName}`,
             photoURL: `${userImage}`,
           });
-          await createProfile(responce, userName);
+          // await createProfile(responce, userName);
           const userId = responce.user.uid;
           dispatch(
             register({

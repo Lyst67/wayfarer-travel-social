@@ -9,10 +9,7 @@ import {
   Button,
 } from "react-native";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
-import db, {
-  firebase,
-  FirebaseDatabaseTypes,
-} from "@react-native-firebase/database";
+import db from "@react-native-firebase/database";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectEmail,
@@ -20,6 +17,8 @@ import {
   selectUserImage,
 } from "../features/user/userSelectors";
 import { refresh } from "../features/user/userSlice";
+import { fetchPosts } from "../features/posts/operations";
+import { useAppDispatch, useAppSelector } from "../hooks";
 
 import ImageViewer from "@/components/imageViwer";
 import UserImage from "@/components/userImage";
@@ -36,10 +35,10 @@ export default function PostsScreen() {
       currentLocation: string;
       postPhoto: string;
     }>();
-  const dispatch = useDispatch();
-  const userName = useSelector(selectName);
-  const userEmail = useSelector(selectEmail);
-  const userImage = useSelector(selectUserImage);
+  const dispatch = useAppDispatch();
+  const userName = useAppSelector(selectName);
+  const userEmail = useAppSelector(selectEmail);
+  const userImage = useAppSelector(selectUserImage);
   const segments = useSegments<Routes>();
   const [hasMounted, setHasMounted] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
@@ -81,6 +80,10 @@ export default function PostsScreen() {
       return;
     }
   }, [user, hasMounted]);
+
+  const handleFetchPosts = () => {
+    dispatch(fetchPosts());
+  };
 
   if (initializing) {
     return (
@@ -177,6 +180,19 @@ export default function PostsScreen() {
             });
         }}
       />
+      <View>
+        <Button
+          title="Posts"
+          onPress={() => {
+            handleFetchPosts;
+          }}
+        />
+        {/* {isLoading ? (
+          <Text>...Loading</Text>
+        ) : (
+          <Text>{JSON.stringify(userPostNames, null, 2)}</Text>
+        )} */}
+      </View>
     </View>
   );
 }

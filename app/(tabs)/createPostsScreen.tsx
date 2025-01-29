@@ -1,5 +1,5 @@
-import { View, StyleSheet, Keyboard, Pressable, Platform } from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Keyboard, Pressable } from "react-native";
+import React, { useState } from "react";
 
 import Feather from "@expo/vector-icons/Feather";
 import TabsCentreButton from "@/components/tabsCentreButton";

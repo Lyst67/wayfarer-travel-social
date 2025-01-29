@@ -60,7 +60,6 @@ export default function PostInput({ postPhoto }: Props) {
     try {
       const location = await Location.getCurrentPositionAsync({});
       if (location) {
-        // console.log("Location obtained:", location);
         const address = await Location.reverseGeocodeAsync(location.coords);
         // console.log("Address from reverse geocode:", address);
         const coords = {
@@ -91,22 +90,7 @@ export default function PostInput({ postPhoto }: Props) {
       alert("Please fill in all posts fields.");
       return;
     }
-    // alert(`Postname: ${postName} and Place: ${place} are created!`);
     await getCurrentLocation();
-    // if (location) {
-    //   router.navigate({
-    //     pathname: "/",
-    //     params: {
-    //       latitude: location?.latitude,
-    //       longitude: location?.longitude,
-    //       place: postName,
-    //       currentLocation: text,
-    //       postPhoto: postPhoto,
-    //     },
-    //   });
-    //   setPostName("");
-    //   setPlace("");
-    // }
   };
 
   return (
