@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { router } from "expo-router";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import db from "@react-native-firebase/database";
-import { useDispatch } from "react-redux";
-import { register } from "@/app/features/user/userSlice";
+import { register } from "@/features/user/userSlice";
+import { useAppDispatch } from "@/hooks";
 
 import RegisterForm from "./registerForm";
 import LinkToSignButton from "./linkToSignButton";
@@ -24,7 +24,7 @@ export default function RegisterComponent({
   const [userImage, setUserImage] = useState<string | null>(null);
   const [formData, setFormData] = useState<UserData | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const navToLogin = () => {
     const email = formData?.email;

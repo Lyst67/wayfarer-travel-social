@@ -1,4 +1,4 @@
-import { Text, Pressable, StyleSheet } from "react-native";
+import { Text, View, Pressable, StyleSheet } from "react-native";
 import React from "react";
 
 type Props = {
@@ -15,14 +15,12 @@ export default function SubmitButton({
   onPress,
 }: Props) {
   return (
-    <>
-      <Pressable
-        style={[styles.button, { backgroundColor: backgroundColor }]}
-        onPress={onPress}
-      >
-        <Text style={[styles.buttonLabel, { color: color }]}>{label}</Text>
-      </Pressable>
-    </>
+    <Pressable
+      style={[styles.button, { backgroundColor: backgroundColor }]}
+      onPress={onPress}
+    >
+      <Text style={[styles.buttonLabel, { color: color }]}>{label}</Text>
+    </Pressable>
   );
 }
 const styles = StyleSheet.create({

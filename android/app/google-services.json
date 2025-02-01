@@ -1,24 +1,25 @@
 {
   "project_info": {
     "project_number": "181341691193",
+    "firebase_url": "https://my-nativeapp-b8818-default-rtdb.firebaseio.com",
     "project_id": "my-nativeapp-b8818",
     "storage_bucket": "my-nativeapp-b8818.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:181341691193:android:ef29fb0bd3b6838bfa1ce8",
+        "mobilesdk_app_id": "process.env.GOOGLE_SERVICES_MOBILESDK_APP_ID",
         "android_client_info": {
           "package_name": "com.nativeapp.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "181341691193-idsf82kmigj12b1odrv71l0nt3jq9tr4.apps.googleusercontent.com",
+          "client_id": "process.env.GOOGLE_SERVICES_CLIENT_ID",
           "client_type": 1,
           "android_info": {
             "package_name": "com.nativeapp.app",
-            "certificate_hash": "0037c5c26097c5f9c3ab1ffe1ac06481b98b97ec"
+            "certificate_hash": "process.env.GOOGLE_SERVICES_SERTIFICATE_HASH"
           }
         }
       ],

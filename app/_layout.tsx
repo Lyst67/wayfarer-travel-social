@@ -6,7 +6,7 @@ import { Stack } from "expo-router";
 import { Dimensions } from "react-native";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import store from "./store";
+import store from "@/store";
 
 const { width, height } = Dimensions.get("window");
 

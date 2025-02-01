@@ -7,7 +7,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import TabsCentreButton from "@/components/tabsCentreButton";
-import { logOut } from "../features/user/userSlice";
+import { logOut } from "@/features/user/userSlice";
 
 export const unstable_settings = {
   initialRouteName: "index",

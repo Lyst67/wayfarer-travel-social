@@ -2,11 +2,11 @@ import { StyleSheet, View, Text, Alert } from "react-native";
 import React, { useState } from "react";
 import { router } from "expo-router";
 import auth from "@react-native-firebase/auth";
+import { login } from "@/features/user/userSlice";
+import { useAppDispatch } from "@/hooks";
 
 import LoginForm from "./loginForm";
 import LinkToSignButton from "./linkToSignButton";
-import { useDispatch } from "react-redux";
-import { login } from "@/app/features/user/userSlice";
 
 type UserData = {
   username?: string;
@@ -17,7 +17,7 @@ type UserData = {
 export default function LoginComponent({ userEmail }: { userEmail: string }) {
   const [formData, setFormData] = useState<UserData | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const navToRegister = () => {
     const email = formData?.email;
@@ -28,7 +28,7 @@ export default function LoginComponent({ userEmail }: { userEmail: string }) {
   };
 
   const handleLogin = async (data: UserData | undefined) => {
-    setLoading(true);
+    // setLoading(true);
     setFormData(data);
     const email = data?.email;
     const password = data?.password;

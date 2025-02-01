@@ -1,4 +1,4 @@
-import { router, Routes, useLocalSearchParams, useSegments } from "expo-router";
+import { Route, router, useLocalSearchParams, useSegments } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -10,15 +10,15 @@ import {
 } from "react-native";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import db from "@react-native-firebase/database";
-import { useDispatch, useSelector } from "react-redux";
 import {
   selectEmail,
   selectName,
   selectUserImage,
-} from "../features/user/userSelectors";
-import { refresh } from "../features/user/userSlice";
-import { fetchPosts } from "../features/posts/operations";
-import { useAppDispatch, useAppSelector } from "../hooks";
+} from "@/features/user/userSelectors";
+import { refresh } from "@/features/user/userSlice";
+import { fetchPosts } from "@/features/posts/operations";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { selectUserPosts } from "@/features/posts/postsSelectors";
 
 import ImageViewer from "@/components/imageViwer";
 import UserImage from "@/components/userImage";
@@ -27,11 +27,12 @@ import EvilIcons from "@expo/vector-icons/EvilIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 export default function PostsScreen() {
-  const { latitude, longitude, place, currentLocation, postPhoto } =
+  const { latitude, longitude, place, postName, currentLocation, postPhoto } =
     useLocalSearchParams<{
       latitude: string;
       longitude: string;
       place: string;
+      postName: string;
       currentLocation: string;
       postPhoto: string;
     }>();
@@ -39,10 +40,11 @@ export default function PostsScreen() {
   const userName = useAppSelector(selectName);
   const userEmail = useAppSelector(selectEmail);
   const userImage = useAppSelector(selectUserImage);
-  const segments = useSegments<Routes>();
+  const segments = useSegments<Route>();
   const [hasMounted, setHasMounted] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
   const [initializing, setInitializing] = useState<boolean>(true);
+  const selectedPosts = useAppSelector(selectUserPosts);
 
   const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
     // console.log("User:", user);
@@ -68,7 +70,9 @@ export default function PostsScreen() {
   }, []);
 
   useEffect(() => {
-    setHasMounted(true);
+    setTimeout(() => {
+      setHasMounted(true);
+    }, 500);
   }, []);
 
   useEffect(() => {
@@ -83,6 +87,7 @@ export default function PostsScreen() {
 
   const handleFetchPosts = () => {
     dispatch(fetchPosts());
+    console.log("UserPosts:", selectedPosts);
   };
 
   if (initializing) {
@@ -113,7 +118,7 @@ export default function PostsScreen() {
           <View style={styles.postImage}>
             <ImageViewer selectedImage={postPhoto} />
           </View>
-          <Text style={styles.imageText}>{place}</Text>
+          <Text style={styles.imageText}>{postName}</Text>
           <View style={styles.imageDescr}>
             <View
               style={{
@@ -171,28 +176,24 @@ export default function PostsScreen() {
         }}
       />
       <Button
-        title="Get users"
+        title="Get posts"
         onPress={() => {
           db()
-            .ref("users")
+            .ref("posts")
             .on("value", (snapshot) => {
-              console.log("Users:", snapshot.val());
+              console.log("Posts:", snapshot.val());
             });
         }}
       />
-      <View>
-        <Button
-          title="Posts"
-          onPress={() => {
-            handleFetchPosts;
-          }}
-        />
-        {/* {isLoading ? (
-          <Text>...Loading</Text>
-        ) : (
-          <Text>{JSON.stringify(userPostNames, null, 2)}</Text>
-        )} */}
-      </View>
+      <Button
+        title="Posts"
+        // onPress={async () => {
+        //   const snapshot = db().ref("/posts").once("value");
+        //   const data = (await snapshot).val();
+        //   console.log(data);
+        // }}
+        onPress={() => handleFetchPosts()}
+      />
     </View>
   );
 }
