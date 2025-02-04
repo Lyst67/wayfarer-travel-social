@@ -3,10 +3,14 @@ import { createPost, deletePost, fetchPosts, updatePost } from "./operations";
 import { LatLng } from "react-native-maps";
 
 export interface Post {
+  userId: null | string;
   userName: null | string;
+  userEmail: null | string;
+  userImage?: null | string;
   postImage: null | undefined | string;
   imageName: null | undefined | string;
   postLocation: LatLng | null;
+  locationMark: null | string | undefined;
   likesCount?: null | number;
   commentsCount?: null | number;
 }
@@ -61,7 +65,8 @@ export const postsSlice = createSlice({
         state.isLoading = false;
         state.error = null;
         const postIds = Object.keys(state.posts);
-        const index = postIds.findIndex((item) => item === action.payload);
+        const deletedPostId = Object.keys(action.payload)[0];
+        const index = postIds.findIndex((item) => item === deletedPostId);
         state.posts.splice(index, 1);
       })
       .addCase(deletePost.rejected, (state, action) => {

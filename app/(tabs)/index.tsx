@@ -1,24 +1,18 @@
-import { Route, router, useLocalSearchParams, useSegments } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { Route, router, useSegments } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Pressable,
   ActivityIndicator,
-  Button,
+  FlatList,
 } from "react-native";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
-import db from "@react-native-firebase/database";
-import {
-  selectEmail,
-  selectName,
-  selectUserImage,
-} from "@/features/user/userSelectors";
-import { refresh } from "@/features/user/userSlice";
 import { fetchPosts } from "@/features/posts/operations";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectUserPosts } from "@/features/posts/postsSelectors";
+import { LatLng } from "react-native-maps";
 
 import ImageViewer from "@/components/imageViwer";
 import UserImage from "@/components/userImage";
@@ -27,38 +21,17 @@ import EvilIcons from "@expo/vector-icons/EvilIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 export default function PostsScreen() {
-  const { latitude, longitude, place, postName, currentLocation, postPhoto } =
-    useLocalSearchParams<{
-      latitude: string;
-      longitude: string;
-      place: string;
-      postName: string;
-      currentLocation: string;
-      postPhoto: string;
-    }>();
   const dispatch = useAppDispatch();
-  const userName = useAppSelector(selectName);
-  const userEmail = useAppSelector(selectEmail);
-  const userImage = useAppSelector(selectUserImage);
   const segments = useSegments<Route>();
   const [hasMounted, setHasMounted] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
   const [initializing, setInitializing] = useState<boolean>(true);
   const selectedPosts = useAppSelector(selectUserPosts);
+  const postsArray = Object.entries(selectedPosts);
 
   const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
     // console.log("User:", user);
     setUser(user);
-    if ((user && !userName) || !userEmail) {
-      dispatch(
-        refresh({
-          email: user?.email,
-          userName: user?.displayName,
-          userImage: user?.photoURL,
-          userId: user?.uid,
-        })
-      );
-    }
     if (initializing) {
       setInitializing(false);
     }
@@ -66,6 +39,7 @@ export default function PostsScreen() {
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    dispatch(fetchPosts());
     return subscriber;
   }, []);
 
@@ -85,11 +59,6 @@ export default function PostsScreen() {
     }
   }, [user, hasMounted]);
 
-  const handleFetchPosts = () => {
-    dispatch(fetchPosts());
-    console.log("UserPosts:", selectedPosts);
-  };
-
   if (initializing) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -98,27 +67,42 @@ export default function PostsScreen() {
     );
   }
 
-  return (
-    <View style={styles.container}>
+  const handleLinkToMapScreen = (location: LatLng, locationMark: string) => {
+    router.push({
+      pathname: "/mapScreen",
+      params: {
+        latitude: location?.latitude,
+        longitude: location?.longitude,
+        currentLocation: locationMark,
+      },
+    });
+  };
+
+  const handleLinkToComments = () => {
+    router.push("/(tabs)/commentsScreen");
+  };
+
+  const renderItem = useCallback(
+    ({ item }: { item: any }) => (
       <View style={styles.userPostContainer}>
         <View style={styles.userContainer}>
           <View style={styles.photoContainer}>
-            {!userImage ? (
+            {!item[1].userImage ? (
               <FontAwesome5 name="user" size={44} color="lightgrey" />
             ) : (
-              <UserImage selectedImage={userImage} />
+              <UserImage selectedImage={item[1].userImage} />
             )}
           </View>
           <View>
-            <Text style={styles.textName}>{userName}</Text>
-            <Text style={styles.textEmail}>{userEmail}</Text>
+            <Text style={styles.textName}>{item[1].userName}</Text>
+            <Text style={styles.textEmail}>{item[1].userEmail}</Text>
           </View>
         </View>
         <View style={styles.userPost}>
           <View style={styles.postImage}>
-            <ImageViewer selectedImage={postPhoto} />
+            <ImageViewer selectedImage={item[1].postImage} />
           </View>
-          <Text style={styles.imageText}>{postName}</Text>
+          <Text style={styles.imageText}>{item[1].imageName}</Text>
           <View style={styles.imageDescr}>
             <View
               style={{
@@ -132,23 +116,18 @@ export default function PostsScreen() {
                 name="comment"
                 size={32}
                 color="#BDBDBD"
-                onPress={() => router.push("/(tabs)/commentsScreen")}
+                onPress={() => handleLinkToComments}
               />
               <Text style={[styles.imageText, { color: "#BDBDBD" }]}>0</Text>
             </View>
             <Pressable
               onPress={() =>
-                router.push({
-                  pathname: "/mapScreen",
-                  params: {
-                    latitude: latitude,
-                    longitude: longitude,
-                    currentLocation: currentLocation,
-                  },
-                })
+                handleLinkToMapScreen(
+                  item[1].postLocation,
+                  item[1].locationMark
+                )
               }
               style={{
-                // flex: 1,
                 gap: 4,
                 flexDirection: "row",
                 alignItems: "center",
@@ -158,41 +137,22 @@ export default function PostsScreen() {
               <Text
                 style={[styles.imageText, { textDecorationLine: "underline" }]}
               >
-                {currentLocation}
+                {item[1].imageName}
               </Text>
             </Pressable>
           </View>
         </View>
       </View>
-      <Button
-        title="Get users"
-        onPress={async () => {
-          db()
-            .ref("/users")
-            .once("value")
-            .then((snapshot) => {
-              console.log("User data: ", snapshot.val());
-            });
-        }}
-      />
-      <Button
-        title="Get posts"
-        onPress={() => {
-          db()
-            .ref("posts")
-            .on("value", (snapshot) => {
-              console.log("Posts:", snapshot.val());
-            });
-        }}
-      />
-      <Button
-        title="Posts"
-        // onPress={async () => {
-        //   const snapshot = db().ref("/posts").once("value");
-        //   const data = (await snapshot).val();
-        //   console.log(data);
-        // }}
-        onPress={() => handleFetchPosts()}
+    ),
+    []
+  );
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={postsArray}
+        keyExtractor={(item) => item[0]}
+        renderItem={renderItem}
       />
     </View>
   );

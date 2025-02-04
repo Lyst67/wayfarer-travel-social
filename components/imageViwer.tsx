@@ -4,7 +4,7 @@ import React from "react";
 
 type Props = {
   imgSource?: ImageSource;
-  selectedImage?: string;
+  selectedImage?: string | null;
 };
 
 export default function ImageViewer({ imgSource, selectedImage }: Props) {

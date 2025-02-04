@@ -1,11 +1,9 @@
 import { StyleSheet, View, TextInput } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router } from "expo-router";
-// import * as Location from "expo-location";
+import { LatLng } from "react-native-maps";
 
 import Feather from "@expo/vector-icons/Feather";
-// import SubmitButton from "./submitButton";
-import { LatLng } from "react-native-maps";
 
 type Props = {
   postName: (name: string | undefined) => void;

@@ -18,39 +18,52 @@ export const fetchPosts = createAsyncThunk<PostItem[], undefined>(
 
 export const createPost = createAsyncThunk<
   PostItem,
-  { userId: any; postId: any; postData: Post }
->(
-  "posts/addPost",
-  async ({ userId, postId, postData }, { rejectWithValue }) => {
-    try {
-      const usersPosts = db().ref(`/posts/${userId}/${postId}`);
-      await usersPosts.set({
-        userName: postData.userName,
-        postImage: postData.postImage,
-        imageName: postData.imageName,
-        postLocation: postData.postLocation,
-        likesCount: postData.likesCount,
-        commentsCount: postData.commentsCount,
-      });
-      const userPost = db().ref(`/posts/${postId}`);
-      const userPostDataSnapshot = await userPost.once("value");
-      const userPostData = userPostDataSnapshot.val();
-      return userPostData as PostItem;
-    } catch (error) {
-      return rejectWithValue(error);
-    }
+  { postId: any; postData: Post }
+>("posts/addPost", async ({ postId, postData }, { rejectWithValue }) => {
+  try {
+    const usersPosts = db().ref(`/posts/${postId}`);
+    await usersPosts.set({
+      userId: postData.userId,
+      userName: postData.userName,
+      userEmail: postData.userEmail,
+      userImage: postData.userImage,
+      postImage: postData.postImage,
+      imageName: postData.imageName,
+      postLocation: postData.postLocation,
+      locationMark: postData.locationMark,
+      likesCount: postData.likesCount,
+      commentsCount: postData.commentsCount,
+    });
+    const newPostData: PostItem[] = [];
+    usersPosts.on("child_added", function (data) {
+      const newPost = data.val();
+      newPostData.push(newPost);
+    });
+    return newPostData[0] as PostItem;
+    // const userPost = db().ref(`/posts/${postId}`);
+    // const userPostDataSnapshot = await userPost.once("value");
+    // const userPostData = userPostDataSnapshot.val();
+    // return userPostData as PostItem;
+  } catch (error) {
+    return rejectWithValue(error);
   }
-);
+});
 
 export const deletePost = createAsyncThunk<
-  string,
+  PostItem,
   string,
   { rejectValue: any }
 >("posts/delete", async (postId, thunkAPI) => {
   try {
-    const data = db().ref(`/posts/${postId}`);
-    await data.remove();
-    return postId;
+    const postData = db().ref(`/posts/${postId}`);
+    await postData.remove();
+    const removedPostData: PostItem[] = [];
+    postData.on("child_removed", function (data) {
+      const removedPost = data.val();
+      removedPostData.push(removedPost);
+    });
+    return removedPostData[0] as PostItem;
+    // return postId;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }

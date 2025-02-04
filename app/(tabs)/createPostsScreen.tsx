@@ -12,7 +12,12 @@ import { LatLng } from "react-native-maps";
 import { router } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { createPost } from "@/features/posts/operations";
-import { selectName, selectUserId } from "@/features/user/userSelectors";
+import {
+  selectEmail,
+  selectName,
+  selectUserId,
+  selectUserImage,
+} from "@/features/user/userSelectors";
 import { nanoid } from "@reduxjs/toolkit";
 
 import Feather from "@expo/vector-icons/Feather";
@@ -33,28 +38,24 @@ export default function CreatePostsScreen() {
   >();
   const userId = useAppSelector(selectUserId);
   const userName = useAppSelector(selectName);
+  const userEmail = useAppSelector(selectEmail);
+  const userImage = useAppSelector(selectUserImage);
   const postId = nanoid();
   const postData = {
+    userId: userId,
     userName: userName,
+    userEmail: userEmail,
+    userImage: userImage,
     postImage: postImage,
     imageName: postName,
     postLocation: location,
+    locationMark: postPlace,
   };
 
   useEffect(() => {
     if (location) {
-      dispatch(createPost({ userId, postId, postData }));
-      router.navigate({
-        pathname: "/",
-        params: {
-          latitude: location?.latitude,
-          longitude: location?.longitude,
-          place: postPlace,
-          postName: postName,
-          currentLocation: text,
-          postPhoto: postImage,
-        },
-      });
+      dispatch(createPost({ postId, postData }));
+      router.navigate("/");
       setLocation(null);
     } else {
       setPostImage("");
