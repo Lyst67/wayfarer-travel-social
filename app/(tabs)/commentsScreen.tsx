@@ -6,24 +6,68 @@ import {
   StyleSheet,
   FlatList,
   TextInput,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import ImageViewer from "@/components/imageViwer";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { fetchComments } from "@/features/comments/operations";
+import { createComment, fetchComments } from "@/features/comments/operations";
 import { selectComments } from "@/features/comments/commentsSelector";
+import { nanoid } from "@reduxjs/toolkit";
+import { selectName, selectUserImage } from "@/features/user/userSelectors";
 
 export default function CommentsScreen() {
   const [commentText, setCommentText] = useState("");
-  const { selectedImage } = useLocalSearchParams<{ selectedImage: string }>();
+  const { selectedPostId, selectedImage } = useLocalSearchParams<{
+    selectedPostId: string;
+    selectedImage: string;
+  }>();
   const dispatch = useAppDispatch();
   const comments = useAppSelector(selectComments);
+  const commentId = nanoid();
+  const authorName = useAppSelector(selectName);
+  const authorImage = useAppSelector(selectUserImage);
+
+  // const time = new Date().toUTCString().split(" ").slice(1, 5);
+  // const clock = time.slice(-1).toString().split(":").splice(0, 2).join(":");
+  // const date = time.slice(0, 3);
+  // const result = [date.join(" "), clock].join(" | ");
+  // console.log(result);
+
+  const formatData = new Date()
+    .toUTCString()
+    .split(" ")
+    .slice(1, 5)
+    .reduce<{ date: string[]; clock: string }>(
+      (acc, part, index) => {
+        if (index < 3) acc.date.push(part); // Ддень, місяць, рік
+        if (index === 3) acc.clock = part.split(":").slice(0, 2).join(":"); // Час
+        return acc;
+      },
+      { date: [], clock: "" }
+    );
+  const commentTime = `${formatData.date.join(" ")} | ${formatData.clock}`;
 
   useEffect(() => {
     dispatch(fetchComments());
   }, []);
+
+  const commentData = {
+    commentedPostId: selectedPostId,
+    commentedImage: selectedImage,
+    commentId: commentId,
+    commentText: commentText,
+    authorName: authorName,
+    authorImage: authorImage,
+    commentTime: commentTime,
+  };
+  const handleAddComment = () => {
+    dispatch(createComment({ commentData }));
+  };
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()} style={{ flex: 1 }}>
@@ -31,27 +75,40 @@ export default function CommentsScreen() {
         <View style={styles.postImage}>
           <ImageViewer selectedImage={selectedImage} />
         </View>
-        <View>
-          <FlatList
-            data={comments}
-            keyExtractor={(item) => item.commentId}
-            renderItem={({ item }) => <Text>{item.authorName}</Text>}
-          />
+        <View style={{ flex: 1 }}>
+          {comments.length > 0 ? (
+            <FlatList
+              data={comments}
+              keyExtractor={(item) => item.commentId}
+              renderItem={({ item }) => <Text>{item.authorName}</Text>}
+            />
+          ) : (
+            <Text>No comments yet</Text>
+          )}
         </View>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Коментувати..."
-            placeholderTextColor="#BDBDBD"
-            value={commentText}
-            onChangeText={setCommentText}
-            keyboardType="twitter"
-            autoCapitalize="none"
-          />
-          <Pressable style={styles.commentButton} onPress={() => {}}>
-            <Ionicons name="arrow-up" size={24} />
-          </Pressable>
-        </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
+        >
+          <SafeAreaView style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Коментувати..."
+              placeholderTextColor="#BDBDBD"
+              value={commentText}
+              onChangeText={setCommentText}
+              keyboardType="twitter"
+              autoCapitalize="none"
+            />
+            <Pressable
+              style={styles.commentButton}
+              onPress={() => {
+                handleAddComment;
+              }}
+            >
+              <Ionicons name="arrow-up" size={24} color="#FFFFFF" />
+            </Pressable>
+          </SafeAreaView>
+        </KeyboardAvoidingView>
       </View>
     </Pressable>
   );
@@ -59,6 +116,7 @@ export default function CommentsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    gap: 32,
     backgroundColor: "#FFF",
     paddingTop: 32,
     paddingBottom: 22,
@@ -89,14 +147,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     width: 343,
-    height: 50,
     borderRadius: 25,
     borderWidth: 1,
     borderColor: "#E8E8E8",
     backgroundColor: "#F6F6F6",
   },
   commentButton: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     width: 34,

@@ -19,7 +19,7 @@ import UserImage from "@/components/userImage";
 import Feather from "@expo/vector-icons/Feather";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import RenderPostItem from "@/components/renderPostItem";
+import { selectUserImage } from "@/features/user/userSelectors";
 
 export default function PostsScreen() {
   const dispatch = useAppDispatch();
@@ -79,102 +79,85 @@ export default function PostsScreen() {
     });
   };
 
-  const handleLinkToComments = (postImage: string) => {
+  const handleLinkToComments = (postId: string, postImage: string) => {
     router.push({
       pathname: "/(tabs)/commentsScreen",
-      params: { selectedImage: postImage },
+      params: { selectedPostId: postId, selectedImage: postImage },
     });
   };
 
-  const renderItem = ({ item }: { item: any }) => {
-    // const [inUse, setInUse] = useState("");
-    // const lastItemId = useRef(item[1].userName);
-    // if (item[1].userName !== lastItemId.current) {
-    //   setInUse(item[1].userName);
-    // }
-    return (
-      <View>
-        <Text>{item[1].userName}</Text>
+  const renderItem = ({ item }: { item: any }) => (
+    <View style={styles.userPostContainer}>
+      <View style={styles.userContainer}>
+        <View style={styles.photoContainer}>
+          {!item[1].userImage ? (
+            <FontAwesome5 name="user" size={44} color="lightgrey" />
+          ) : (
+            <UserImage selectedImage={item[1].userImage} />
+          )}
+        </View>
+        <View>
+          <Text style={styles.textName}>{item[1].userName}</Text>
+          <Text style={styles.textEmail}>{item[1].userEmail}</Text>
+        </View>
       </View>
-      // <View style={styles.userPostContainer}>
-      //   {item[1].userEmail !== inUse ? (
-      //     <View style={styles.userContainer}>
-      //       <View style={styles.photoContainer}>
-      //         {!item[1].userImage ? (
-      //           <FontAwesome5 name="user" size={44} color="lightgrey" />
-      //         ) : (
-      //           <UserImage selectedImage={item[1].userImage} />
-      //         )}
-      //       </View>
-      //       <View>
-      //         <Text style={styles.textName}>{item[1].userName}</Text>
-      //         <Text style={styles.textEmail}>{item[1].userEmail}</Text>
-      //       </View>
-      //     </View>
-      //   ) : null}
-      //   <View style={styles.userPost}>
-      //     <View style={styles.postImage}>
-      //       <ImageViewer selectedImage={item[1].postImage} />
-      //     </View>
-      //     <Text style={styles.imageText}>{item[1].imageName}</Text>
-      //     <View style={styles.imageDescr}>
-      //       <View
-      //         style={{
-      //           flex: 1,
-      //           gap: 6,
-      //           flexDirection: "row",
-      //           alignItems: "center",
-      //         }}
-      //       >
-      //         <EvilIcons
-      //           name="comment"
-      //           size={32}
-      //           color="#BDBDBD"
-      //           onPress={() => handleLinkToComments(item[1].postImage)}
-      //         />
-      //         <Text style={[styles.imageText, { color: "#BDBDBD" }]}>0</Text>
-      //       </View>
-      //       <Pressable
-      //         onPress={() =>
-      //           handleLinkToMapScreen(
-      //             item[1].postLocation,
-      //             item[1].locationMark
-      //           )
-      //         }
-      //         style={{
-      //           gap: 4,
-      //           flexDirection: "row",
-      //           alignItems: "center",
-      //         }}
-      //       >
-      //         <Feather name="map-pin" size={24} color="#BDBDBD" />
-      //         <Text
-      //           style={[styles.imageText, { textDecorationLine: "underline" }]}
-      //         >
-      //           {item[1].imageName}
-      //         </Text>
-      //       </Pressable>
-      //     </View>
-      //   </View>
-      // </View>
-    );
-  };
+      <View style={styles.userPost}>
+        <View style={styles.postImage}>
+          <ImageViewer selectedImage={item[1].postImage} />
+        </View>
+        <Text style={styles.imageText}>{item[1].imageName}</Text>
+        <View style={styles.imageDescr}>
+          <View
+            style={{
+              flex: 1,
+              gap: 6,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <EvilIcons
+              name="comment"
+              size={32}
+              color="#BDBDBD"
+              onPress={() => handleLinkToComments(item[0], item[1].postImage)}
+            />
+            <Text style={[styles.imageText, { color: "#BDBDBD" }]}>0</Text>
+          </View>
+          <Pressable
+            onPress={() =>
+              handleLinkToMapScreen(item[1].postLocation, item[1].locationMark)
+            }
+            style={{
+              gap: 4,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Feather name="map-pin" size={24} color="#BDBDBD" />
+            <Text
+              style={[styles.imageText, { textDecorationLine: "underline" }]}
+            >
+              {item[1].imageName}
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+    </View>
+  );
 
   return (
-    // <View style={styles.container}>
-    <FlashList
-      data={postsArray}
-      keyExtractor={(item) => item[0]}
-      renderItem={RenderPostItem}
-      estimatedItemSize={200}
-    />
-    // </View>
+    <View style={styles.container}>
+      <FlashList
+        data={postsArray}
+        keyExtractor={(item) => item[0]}
+        renderItem={renderItem}
+      />
+    </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 34,
     backgroundColor: "#FFFFF",
     paddingTop: 32,
     paddingHorizontal: 16,
@@ -182,6 +165,7 @@ const styles = StyleSheet.create({
   userPostContainer: {
     flex: 1,
     gap: 32,
+    marginBottom: 32,
   },
   userContainer: {
     flexDirection: "row",

@@ -41,6 +41,7 @@ export default function CreatePostsScreen() {
   const userEmail = useAppSelector(selectEmail);
   const userImage = useAppSelector(selectUserImage);
   const postId = nanoid();
+
   const postData = {
     userId: userId,
     userName: userName,
