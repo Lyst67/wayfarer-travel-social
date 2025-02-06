@@ -7,18 +7,23 @@ import {
 } from "./operations";
 
 export interface Comment {
-  commentId: null | string;
+  commentedPostId: string;
+  commentId: string;
   commentText: null | string;
   authorName: null | string;
   authorImage: null | string;
   commentTime: null | string;
 }
 export interface Comments {
+  commentedImage: string | null;
+  commentsCount: number | null;
   comments: Comment[];
   isLoading: boolean;
   error: any;
 }
 const initialState: Comments = {
+  commentsCount: 0,
+  commentedImage: null,
   comments: [],
   isLoading: false,
   error: null,
@@ -27,7 +32,14 @@ const initialState: Comments = {
 export const commentsSlice = createSlice({
   name: "comments",
   initialState,
-  reducers: {},
+  reducers: {
+    addImage: (state, action) => {
+      state.commentedImage = action.payload.commentedImage;
+    },
+    count: (state) => {
+      state.commentsCount = state.comments.length;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchComments.pending, (state) => {
@@ -86,4 +98,5 @@ export const commentsSlice = createSlice({
       });
   },
 });
-export default commentsSlice.reducer;
+export const { addImage, count } = commentsSlice.actions;
+export const commentsReducer = commentsSlice.reducer;

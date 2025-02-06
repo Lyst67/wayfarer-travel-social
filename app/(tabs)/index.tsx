@@ -1,28 +1,29 @@
-import { Route, router, useSegments } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import { router, useSegments } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Pressable,
   ActivityIndicator,
-  FlatList,
 } from "react-native";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { fetchPosts } from "@/features/posts/operations";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectUserPosts } from "@/features/posts/postsSelectors";
 import { LatLng } from "react-native-maps";
+import { FlashList } from "@shopify/flash-list";
 
 import ImageViewer from "@/components/imageViwer";
 import UserImage from "@/components/userImage";
 import Feather from "@expo/vector-icons/Feather";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import RenderPostItem from "@/components/renderPostItem";
 
 export default function PostsScreen() {
   const dispatch = useAppDispatch();
-  const segments = useSegments<Route>();
+  const segments = useSegments();
   const [hasMounted, setHasMounted] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
   const [initializing, setInitializing] = useState<boolean>(true);
@@ -78,83 +79,96 @@ export default function PostsScreen() {
     });
   };
 
-  const handleLinkToComments = () => {
-    router.push("/(tabs)/commentsScreen");
+  const handleLinkToComments = (postImage: string) => {
+    router.push({
+      pathname: "/(tabs)/commentsScreen",
+      params: { selectedImage: postImage },
+    });
   };
 
-  const renderItem = useCallback(
-    ({ item }: { item: any }) => (
-      <View style={styles.userPostContainer}>
-        <View style={styles.userContainer}>
-          <View style={styles.photoContainer}>
-            {!item[1].userImage ? (
-              <FontAwesome5 name="user" size={44} color="lightgrey" />
-            ) : (
-              <UserImage selectedImage={item[1].userImage} />
-            )}
-          </View>
-          <View>
-            <Text style={styles.textName}>{item[1].userName}</Text>
-            <Text style={styles.textEmail}>{item[1].userEmail}</Text>
-          </View>
-        </View>
-        <View style={styles.userPost}>
-          <View style={styles.postImage}>
-            <ImageViewer selectedImage={item[1].postImage} />
-          </View>
-          <Text style={styles.imageText}>{item[1].imageName}</Text>
-          <View style={styles.imageDescr}>
-            <View
-              style={{
-                flex: 1,
-                gap: 6,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <EvilIcons
-                name="comment"
-                size={32}
-                color="#BDBDBD"
-                onPress={() => handleLinkToComments}
-              />
-              <Text style={[styles.imageText, { color: "#BDBDBD" }]}>0</Text>
-            </View>
-            <Pressable
-              onPress={() =>
-                handleLinkToMapScreen(
-                  item[1].postLocation,
-                  item[1].locationMark
-                )
-              }
-              style={{
-                gap: 4,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Feather name="map-pin" size={24} color="#BDBDBD" />
-              <Text
-                style={[styles.imageText, { textDecorationLine: "underline" }]}
-              >
-                {item[1].imageName}
-              </Text>
-            </Pressable>
-          </View>
-        </View>
+  const renderItem = ({ item }: { item: any }) => {
+    // const [inUse, setInUse] = useState("");
+    // const lastItemId = useRef(item[1].userName);
+    // if (item[1].userName !== lastItemId.current) {
+    //   setInUse(item[1].userName);
+    // }
+    return (
+      <View>
+        <Text>{item[1].userName}</Text>
       </View>
-    ),
-    []
-  );
+      // <View style={styles.userPostContainer}>
+      //   {item[1].userEmail !== inUse ? (
+      //     <View style={styles.userContainer}>
+      //       <View style={styles.photoContainer}>
+      //         {!item[1].userImage ? (
+      //           <FontAwesome5 name="user" size={44} color="lightgrey" />
+      //         ) : (
+      //           <UserImage selectedImage={item[1].userImage} />
+      //         )}
+      //       </View>
+      //       <View>
+      //         <Text style={styles.textName}>{item[1].userName}</Text>
+      //         <Text style={styles.textEmail}>{item[1].userEmail}</Text>
+      //       </View>
+      //     </View>
+      //   ) : null}
+      //   <View style={styles.userPost}>
+      //     <View style={styles.postImage}>
+      //       <ImageViewer selectedImage={item[1].postImage} />
+      //     </View>
+      //     <Text style={styles.imageText}>{item[1].imageName}</Text>
+      //     <View style={styles.imageDescr}>
+      //       <View
+      //         style={{
+      //           flex: 1,
+      //           gap: 6,
+      //           flexDirection: "row",
+      //           alignItems: "center",
+      //         }}
+      //       >
+      //         <EvilIcons
+      //           name="comment"
+      //           size={32}
+      //           color="#BDBDBD"
+      //           onPress={() => handleLinkToComments(item[1].postImage)}
+      //         />
+      //         <Text style={[styles.imageText, { color: "#BDBDBD" }]}>0</Text>
+      //       </View>
+      //       <Pressable
+      //         onPress={() =>
+      //           handleLinkToMapScreen(
+      //             item[1].postLocation,
+      //             item[1].locationMark
+      //           )
+      //         }
+      //         style={{
+      //           gap: 4,
+      //           flexDirection: "row",
+      //           alignItems: "center",
+      //         }}
+      //       >
+      //         <Feather name="map-pin" size={24} color="#BDBDBD" />
+      //         <Text
+      //           style={[styles.imageText, { textDecorationLine: "underline" }]}
+      //         >
+      //           {item[1].imageName}
+      //         </Text>
+      //       </Pressable>
+      //     </View>
+      //   </View>
+      // </View>
+    );
+  };
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={postsArray}
-        keyExtractor={(item) => item[0]}
-        renderItem={renderItem}
-      />
-    </View>
+    // <View style={styles.container}>
+    <FlashList
+      data={postsArray}
+      keyExtractor={(item) => item[0]}
+      renderItem={RenderPostItem}
+      estimatedItemSize={200}
+    />
+    // </View>
   );
 }
 const styles = StyleSheet.create({

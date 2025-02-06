@@ -23,6 +23,7 @@ export const createComment = createAsyncThunk<
   try {
     const usersComments = db().ref(`/comments`);
     await usersComments.set({
+      commentedPostId: commentData.commentedPostId,
       commentId: commentData.commentId,
       commentText: commentData.commentText,
       authorName: commentData.authorName,

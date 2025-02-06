@@ -112,7 +112,21 @@ export default function ScreensLayout() {
       />
       <Tabs.Screen
         name="commentsScreen"
-        options={{ title: "Коментарі", href: null }}
+        options={{
+          title: "Коментарі",
+          tabBarStyle: { display: "none" },
+          href: null,
+          headerLeft: () => {
+            return (
+              <MaterialIcons
+                onPress={() => router.navigate("./")}
+                name="keyboard-backspace"
+                size={24}
+                color="#212121CC"
+              />
+            );
+          },
+        }}
       />
       <Tabs.Screen
         name="profileScreen"

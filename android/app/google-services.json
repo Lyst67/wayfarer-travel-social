@@ -25,7 +25,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBBfZCoZsFsa2E3mZSjXmNsrbPDQOfPdmo"
+          "current_key": "process.env.GOOGLE_SERVICES_FIREBASE_API_KEY"
         }
       ],
       "services": {
