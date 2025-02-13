@@ -9,13 +9,6 @@ import MapView, {
 import * as Location from "expo-location";
 import { useLocalSearchParams } from "expo-router";
 
-const initialRegion = {
-  latitude: 37.78825,
-  longitude: -122.4324,
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421,
-};
-
 export default function MapScreen({}) {
   const { latitude, longitude, currentLocation } = useLocalSearchParams<{
     latitude: string;
@@ -26,8 +19,12 @@ export default function MapScreen({}) {
   const [address, setAddress] = useState<string>();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // console.log(longitude, latitude, currentLocation);
-
+const initialRegion = {
+  latitude: 37.78825,
+  longitude: -122.4324,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
   useEffect(() => {
     if (!latitude || !longitude) {
       return;
@@ -78,7 +75,7 @@ export default function MapScreen({}) {
     <View style={styles.container}>
       <MapView
         style={styles.map}
-        // initialRegion={initialRegion}
+//         initialRegion={initialRegion}
         provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
         region={mapRegion}
         showsUserLocation={true}

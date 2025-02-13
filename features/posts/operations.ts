@@ -8,7 +8,6 @@ export const fetchPosts = createAsyncThunk<PostItem[], undefined>(
     try {
       const snapshot = db().ref("/posts").once("value");
       const data = (await snapshot).val();
-      // console.log("Data:", data as PostItem[]);
       return data as PostItem[];
     } catch (error) {
       return rejectWithValue(error);

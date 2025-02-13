@@ -11,7 +11,6 @@ import * as Location from "expo-location";
 import { LatLng } from "react-native-maps";
 import { router } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { createPost } from "@/features/posts/operations";
 import {
   selectEmail,
   selectName,
@@ -19,6 +18,7 @@ import {
   selectUserImage,
 } from "@/features/user/userSelectors";
 import { nanoid } from "@reduxjs/toolkit";
+import db from "@react-native-firebase/database";
 
 import Feather from "@expo/vector-icons/Feather";
 import TabsCentreButton from "@/components/tabsCentreButton";
@@ -55,9 +55,21 @@ export default function CreatePostsScreen() {
 
   useEffect(() => {
     if (location) {
-      dispatch(createPost({ postId, postData }));
+      console.log(location)
+      db().ref(`/posts/${postId}`)
+     .set({
+      userId: postData.userId,
+      userName: postData.userName,
+      userEmail: postData.userEmail,
+      userImage: postData.userImage,
+      postImage: postData.postImage,
+      imageName: postData.imageName,
+      postLocation: postData.postLocation,
+      locationMark: postData.locationMark, 
+    });
+      // dispatch(createPost({ postId, postData }));
       router.navigate("/");
-      setLocation(null);
+      // setLocation(null);
     } else {
       setPostImage("");
       setPostName("");
@@ -92,7 +104,7 @@ export default function CreatePostsScreen() {
     }
   }
 
-  const handlePost = async () => {
+  const handleSubmitPost = async () => {
     if (!postName || !postPlace) {
       alert("Please fill in all posts fields.");
       return;
@@ -131,7 +143,7 @@ export default function CreatePostsScreen() {
               backgroundColor={!postName || !postPlace ? "#F6F6F6" : "#FF6C00"}
               color={!postName || !postPlace ? "#BDBDBD" : "#FFF"}
               label="Опубліковати"
-              onPress={handlePost}
+              onPress={handleSubmitPost}
             />
           </View>
         </View>

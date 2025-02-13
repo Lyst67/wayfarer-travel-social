@@ -1,8 +1,7 @@
-import { StyleSheet, View, Text, Alert, Button } from "react-native";
+import { StyleSheet, View, Text, Alert } from "react-native";
 import React, { useState } from "react";
 import { router } from "expo-router";
-import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
-import db from "@react-native-firebase/database";
+import auth from "@react-native-firebase/auth";
 import { register } from "@/features/user/userSlice";
 import { useAppDispatch } from "@/hooks";
 
@@ -34,13 +33,6 @@ export default function RegisterComponent({
     });
   };
 
-  // const createProfile = async (
-  //   responce: FirebaseAuthTypes.UserCredential,
-  //   userName: string | undefined
-  // ) => {
-  //   await db().ref(`/users/${responce.user.uid}`).set({ name: userName });
-  // };
-
   const handleRegister = async (data: UserData | undefined) => {
     setLoading(true);
     setFormData(data);
@@ -58,7 +50,6 @@ export default function RegisterComponent({
             displayName: `${userName}`,
             photoURL: `${userImage}`,
           });
-          // await createProfile(responce, userName);
           const userId = responce.user.uid;
           dispatch(
             register({
@@ -107,14 +98,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     paddingBottom: 66,
-  },
-  photoContainer: {
-    width: 120,
-    height: 120,
-    marginTop: -60,
-    backgroundColor: "#F6F6F6",
-    marginHorizontal: "auto",
-    borderRadius: 16,
   },
   text: {
     color: "#212121",

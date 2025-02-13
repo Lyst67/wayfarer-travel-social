@@ -16,7 +16,7 @@
     "ios": {
       "bundleIdentifier": "com.nativeapp.app",
       "config": {
-        "googleMapsApiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_APIKEY_PROD"
+        "googleMapsApiKey": "process.env.GOOGLE_MAPS_ANDROID_API_KEY"
       },
       "supportsTablet": true
     },
@@ -25,7 +25,7 @@
       "package": "com.nativeapp.app",
       "config": {
         "googleMaps": {
-          "apiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_APIKEY_PROD"
+          "apiKey": "process.env.GOOGLE_MAPS_ANDROID_API_KEY"
         }
       },
       "adaptiveIcon": {

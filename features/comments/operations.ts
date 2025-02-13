@@ -8,7 +8,6 @@ export const fetchComments = createAsyncThunk<Comment[], undefined>(
     try {
       const snapshot = db().ref("/comments").once("value");
       const data = (await snapshot).val();
-      // console.log("Data:", data as PostItem[]);
       return data as Comment[];
     } catch (error) {
       return rejectWithValue(error);

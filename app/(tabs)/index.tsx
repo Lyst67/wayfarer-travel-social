@@ -1,25 +1,24 @@
 import { router, useSegments } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Pressable,
   ActivityIndicator,
+  FlatList,
 } from "react-native";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { fetchPosts } from "@/features/posts/operations";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectUserPosts } from "@/features/posts/postsSelectors";
 import { LatLng } from "react-native-maps";
-import { FlashList } from "@shopify/flash-list";
 
 import ImageViewer from "@/components/imageViwer";
 import UserImage from "@/components/userImage";
 import Feather from "@expo/vector-icons/Feather";
-import EvilIcons from "@expo/vector-icons/EvilIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import { selectUserImage } from "@/features/user/userSelectors";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function PostsScreen() {
   const dispatch = useAppDispatch();
@@ -82,7 +81,10 @@ export default function PostsScreen() {
   const handleLinkToComments = (postId: string, postImage: string) => {
     router.push({
       pathname: "/(tabs)/commentsScreen",
-      params: { selectedPostId: postId, selectedImage: postImage },
+      params: {
+        selectedPostId: postId,
+        selectedImage: postImage,
+      },
     });
   };
 
@@ -115,9 +117,9 @@ export default function PostsScreen() {
               alignItems: "center",
             }}
           >
-            <EvilIcons
-              name="comment"
-              size={32}
+            <FontAwesome
+              name="comment-o"
+              size={24}
               color="#BDBDBD"
               onPress={() => handleLinkToComments(item[0], item[1].postImage)}
             />
@@ -147,7 +149,9 @@ export default function PostsScreen() {
 
   return (
     <View style={styles.container}>
-      <FlashList
+      <View><Text>Hello {user?.displayName}!</Text></View>
+      
+      <FlatList
         data={postsArray}
         keyExtractor={(item) => item[0]}
         renderItem={renderItem}

@@ -31,26 +31,21 @@ export default function CommentsScreen() {
   const commentId = nanoid();
   const authorName = useAppSelector(selectName);
   const authorImage = useAppSelector(selectUserImage);
-
-  // const time = new Date().toUTCString().split(" ").slice(1, 5);
-  // const clock = time.slice(-1).toString().split(":").splice(0, 2).join(":");
-  // const date = time.slice(0, 3);
-  // const result = [date.join(" "), clock].join(" | ");
-  // console.log(result);
-
   const formatData = new Date()
     .toUTCString()
     .split(" ")
     .slice(1, 5)
     .reduce<{ date: string[]; clock: string }>(
-      (acc, part, index) => {
-        if (index < 3) acc.date.push(part); // Ддень, місяць, рік
-        if (index === 3) acc.clock = part.split(":").slice(0, 2).join(":"); // Час
+      (acc, timeData, index) => {
+        if (index < 3) acc.date.push(timeData); // Ддень, місяць, рік
+        if (index === 3) acc.clock = timeData.split(":").slice(0, 2).join(":"); // Час
         return acc;
       },
       { date: [], clock: "" }
     );
   const commentTime = `${formatData.date.join(" ")} | ${formatData.clock}`;
+
+  // console.log(Array.isArray(comments)); // true
 
   useEffect(() => {
     dispatch(fetchComments());
@@ -83,7 +78,7 @@ export default function CommentsScreen() {
               renderItem={({ item }) => <Text>{item.authorName}</Text>}
             />
           ) : (
-            <Text>No comments yet</Text>
+            <Text>There are no comments yet.</Text>
           )}
         </View>
         <KeyboardAvoidingView
