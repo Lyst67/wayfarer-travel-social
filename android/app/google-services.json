@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "25801102878",
+    "project_id": "wayfarer-4571c",
+    "storage_bucket": "wayfarer-4571c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:25801102878:android:bdc74761d19bdb4f37c00f",
+        "android_client_info": {
+          "package_name": "com.wayfarer.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPOj_-0JSIFIvJtwSMc2fEIbmyMn2kPlU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

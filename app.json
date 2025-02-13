@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "NativeApp",
-    "slug": "nativeapp",
+    "name": "Wayfarer",
+    "slug": "wayfarer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -14,18 +14,18 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "bundleIdentifier": "com.nativeapp.app",
+      "bundleIdentifier": "com.wayfarer.app",
       "config": {
-        "googleMapsApiKey": "process.env.GOOGLE_MAPS_ANDROID_API_KEY"
+       
       },
       "supportsTablet": true
     },
     "android": {
-      "googleServicesFile": "./google-services.json",
-      "package": "com.nativeapp.app",
+      "googleServicesFile": "google-services.json",
+      "package": "com.wayfarer.app",
       "config": {
         "googleMaps": {
-          "apiKey": "process.env.GOOGLE_MAPS_ANDROID_API_KEY"
+         
         }
       },
       "adaptiveIcon": {
@@ -80,7 +80,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "153b1216-9072-4e53-b706-35c53ed87912"
+        
       }
     },
     "owner": "lystopad"
