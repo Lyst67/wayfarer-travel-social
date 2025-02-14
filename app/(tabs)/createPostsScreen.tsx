@@ -18,7 +18,7 @@ import {
   selectUserImage,
 } from "@/features/user/userSelectors";
 import { nanoid } from "@reduxjs/toolkit";
-import db from "@react-native-firebase/database";
+import database from "@react-native-firebase/database";
 
 import Feather from "@expo/vector-icons/Feather";
 import TabsCentreButton from "@/components/tabsCentreButton";
@@ -42,6 +42,8 @@ export default function CreatePostsScreen() {
   const userImage = useAppSelector(selectUserImage);
   const postId = nanoid();
 
+
+  
   const postData = {
     userId: userId,
     userName: userName,
@@ -56,7 +58,7 @@ export default function CreatePostsScreen() {
   useEffect(() => {
     if (location) {
       console.log(location)
-      db().ref(`/posts/${postId}`)
+      database().ref(`/posts/${postId}`)
      .set({
       userId: postData.userId,
       userName: postData.userName,
@@ -65,11 +67,17 @@ export default function CreatePostsScreen() {
       postImage: postData.postImage,
       imageName: postData.imageName,
       postLocation: postData.postLocation,
-      locationMark: postData.locationMark, 
+      locationMark: postData.locationMark,
+    }).then(() => {
+      console.log('Post data written successfully!');
+     router.navigate("/");
+      setLocation(null);
+    })
+    .catch((error) => {
+      console.error('Error writing post data:', error);
+     
     });
-      // dispatch(createPost({ postId, postData }));
-      router.navigate("/");
-      // setLocation(null);
+//       dispatch(createPost({ postId, postData }));
     } else {
       setPostImage("");
       setPostName("");

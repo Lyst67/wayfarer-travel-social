@@ -1,8 +1,10 @@
 import React from "react";
 import { router, Tabs } from "expo-router";
-import auth from "@react-native-firebase/auth";
 import { useDispatch } from "react-redux";
 import { logOut } from "@/features/user/userSlice";
+import { Alert } from "react-native";
+import { logout } from "@/features/user/authOperations";
+// import { getAuth, signOut } from '@react-native-firebase/auth';
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -15,13 +17,26 @@ export const unstable_settings = {
 
 export default function ScreensLayout() {
   const dispatch = useDispatch();
-  const handleLogOut = () => {
-    auth()
-      .signOut()
-      .then(() => console.log("User signed out!"))
-      .catch((error: any) => console.error("Error signing out: ", error));
-    dispatch(logOut());
-  };
+  // const auth = getAuth();
+
+  const handleLogOut = async () => {  
+    const { success, message } = await logout();  
+  
+    if (success) {  
+      console.log(message);  
+      dispatch(logOut()); 
+    } else {  
+      console.error("Error signing out: ", message);  
+      Alert.alert("Logout Error", message);  
+    }  
+  };  
+
+  // const handleLogOut = () => {
+  //   signOut(auth)
+  //     .then(() => console.log("User signed out!"))
+  //     .catch((error: any) => console.error("Error signing out: ", error));
+  //   dispatch(logOut());
+  // };
 
   return (
     <Tabs

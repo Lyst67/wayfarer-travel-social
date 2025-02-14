@@ -7,12 +7,16 @@ import {
   Pressable,
   ActivityIndicator,
   FlatList,
+Button,
 } from "react-native";
-import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
+import database from "@react-native-firebase/database";
+import { getDatabase, ref, set } from "firebase/database";
 import { fetchPosts } from "@/features/posts/operations";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectUserPosts } from "@/features/posts/postsSelectors";
 import { LatLng } from "react-native-maps";
+import { nanoid } from "@reduxjs/toolkit"; 
+import { getAuth, onAuthStateChanged, FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 import ImageViewer from "@/components/imageViwer";
 import UserImage from "@/components/userImage";
@@ -20,26 +24,30 @@ import Feather from "@expo/vector-icons/Feather";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
+
 export default function PostsScreen() {
   const dispatch = useAppDispatch();
   const segments = useSegments();
   const [hasMounted, setHasMounted] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
   const [initializing, setInitializing] = useState<boolean>(true);
-  const selectedPosts = useAppSelector(selectUserPosts);
-  const postsArray = Object.entries(selectedPosts);
+  // const selectedPosts = useAppSelector(selectUserPosts);
+  // const postsArray = Object.entries(selectedPosts);
+  const postArray: ArrayLike<any> | null | undefined = []
+const postId = nanoid()
+const auth = getAuth();
 
-  const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
-    // console.log("User:", user);
+  const currentUser = (user: FirebaseAuthTypes.User | null) => {
     setUser(user);
+      console.log("User:", user);
     if (initializing) {
       setInitializing(false);
     }
   };
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    dispatch(fetchPosts());
+    const subscriber = onAuthStateChanged(auth, currentUser);
+    // dispatch(fetchPosts());
     return subscriber;
   }, []);
 
@@ -87,6 +95,26 @@ export default function PostsScreen() {
       },
     });
   };
+
+  const handlePost = () => {
+
+    const db = getDatabase();
+    set(ref(db, 'users/' + postId), {
+      username: "Mango",
+      email: user?.email,
+    });
+  }
+
+// const handlePost = () => {
+   
+//   database().ref(`/posts/test`).set({Name: "Mango"})
+//       .then(() => {
+//         console.log('Post data written successfully!');
+//       })
+//       .catch((error) => {
+//         console.error('Error writing post data:', error);
+       
+//       });}
 
   const renderItem = ({ item }: { item: any }) => (
     <View style={styles.userPostContainer}>
@@ -150,12 +178,13 @@ export default function PostsScreen() {
   return (
     <View style={styles.container}>
       <View><Text>Hello {user?.displayName}!</Text></View>
-      
       <FlatList
-        data={postsArray}
+        data={postArray}
         keyExtractor={(item) => item[0]}
         renderItem={renderItem}
-      />
+       />
+
+      <Button title="AddPost" onPress={handlePost}/>
     </View>
   );
 }

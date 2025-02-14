@@ -20,7 +20,7 @@ type Props = {
 
 export default function RegisterForm({ onSubmit, loading, userEmail }: Props) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [username, setUsername] = useState("");
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   useEffect(() => {
@@ -33,13 +33,13 @@ export default function RegisterForm({ onSubmit, loading, userEmail }: Props) {
     setShowPassword((prev) => !prev);
   };
   const handleSubmit = () => {
-    if (!username || !email || !password) {
+    if (!userName || !email || !password) {
       alert("Please fill in all fields.");
       return;
     }
-    const formData = { username, email, password };
+    const formData = { userName, email, password };
     onSubmit(formData);
-    setUsername("");
+    setUserName("");
     setEmail("");
     setPassword("");
   };
@@ -54,9 +54,9 @@ export default function RegisterForm({ onSubmit, loading, userEmail }: Props) {
             style={styles.input}
             placeholder={"Логін"}
             placeholderTextColor="#BDBDBD"
-            value={username}
+            value={userName}
             textContentType="name"
-            onChangeText={setUsername}
+            onChangeText={setUserName}
           />
           <TextInput
             style={styles.input}
