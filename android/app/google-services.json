@@ -1,42 +1,33 @@
 {
   "project_info": {
-    "project_number": "25801102878",
-    "firebase_url": "https://wayfarer-4571c-default-rtdb.europe-west1.firebasedatabase.app",
-    "project_id": "wayfarer-4571c",
-    "storage_bucket": "wayfarer-4571c.firebasestorage.app"
+    "project_number": "628202126622",
+    "project_id": "wayfarerapp-345ee",
+    "storage_bucket": "wayfarerapp-345ee.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:25801102878:android:bdc74761d19bdb4f37c00f",
+        "mobilesdk_app_id": "1:628202126622:android:3bf28cfb44fe0fc9eedd0f",
         "android_client_info": {
           "package_name": "com.wayfarer.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "25801102878-pm3rf4jjc4edm6ab76rmq6qlfmo46sar.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.wayfarer.app",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
-          }
-        },
-        {
-          "client_id": "25801102878-pd21k566fqbif30mvaqfgcceg6t142q0.apps.googleusercontent.com",
+          "client_id": "628202126622-oice1jjq6te0c6lfkvids4jai8pi8lr2.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCPOj_-0JSIFIvJtwSMc2fEIbmyMn2kPlU"
+          "current_key": "AIzaSyCyeJ_xB3w_a2ma_pIPMA68h1uzU3X0GYI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "25801102878-pd21k566fqbif30mvaqfgcceg6t142q0.apps.googleusercontent.com",
+              "client_id": "628202126622-oice1jjq6te0c6lfkvids4jai8pi8lr2.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

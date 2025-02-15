@@ -9,14 +9,14 @@ import {
   FlatList,
 Button,
 } from "react-native";
-import database from "@react-native-firebase/database";
-import { getDatabase, ref, set } from "firebase/database";
+// import  db, {firebase}  from "@react-native-firebase/database";
 import { fetchPosts } from "@/features/posts/operations";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectUserPosts } from "@/features/posts/postsSelectors";
 import { LatLng } from "react-native-maps";
 import { nanoid } from "@reduxjs/toolkit"; 
 import { getAuth, onAuthStateChanged, FirebaseAuthTypes } from '@react-native-firebase/auth';
+import {getDatabase, set, ref} from "@react-native-firebase/database";
 
 import ImageViewer from "@/components/imageViwer";
 import UserImage from "@/components/userImage";
@@ -36,6 +36,7 @@ export default function PostsScreen() {
   const postArray: ArrayLike<any> | null | undefined = []
 const postId = nanoid()
 const auth = getAuth();
+
 
   const currentUser = (user: FirebaseAuthTypes.User | null) => {
     setUser(user);
@@ -96,17 +97,18 @@ const auth = getAuth();
     });
   };
 
-  const handlePost = () => {
-
-    const db = getDatabase();
+  const handlePost = async () => {
+    try {const db = getDatabase();
     set(ref(db, 'users/' + postId), {
-      username: "Mango",
+      username: user?.displayName,
       email: user?.email,
-    });
-  }
+    })} catch (error: any) {  
+       console.log( error.message,);
+      };  
+    } 
 
 // const handlePost = () => {
-   
+//    firebase.app().
 //   database().ref(`/posts/test`).set({Name: "Mango"})
 //       .then(() => {
 //         console.log('Post data written successfully!');
