@@ -7,22 +7,19 @@ import {
   Pressable,
   ActivityIndicator,
   FlatList,
-Button,
 } from "react-native";
-// import  db, {firebase}  from "@react-native-firebase/database";
 import { fetchPosts } from "@/features/posts/operations";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectUserPosts } from "@/features/posts/postsSelectors";
 import { LatLng } from "react-native-maps";
-import { nanoid } from "@reduxjs/toolkit"; 
 import { getAuth, onAuthStateChanged, FirebaseAuthTypes } from '@react-native-firebase/auth';
-import {getDatabase, set, ref} from "@react-native-firebase/database";
 
 import ImageViewer from "@/components/imageViwer";
 import UserImage from "@/components/userImage";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 
 export default function PostsScreen() {
@@ -33,14 +30,11 @@ export default function PostsScreen() {
   const [initializing, setInitializing] = useState<boolean>(true);
   const selectedPosts = useAppSelector(selectUserPosts);
   const postsArray = Object.entries(selectedPosts);
-  const postArray: ArrayLike<any> | null | undefined = []
-const postId = nanoid()
-const auth = getAuth();
-console.log(postsArray)
+  const auth = getAuth();
 
   const currentUser = (user: FirebaseAuthTypes.User | null) => {
     setUser(user);
-//       console.log("User:", user);
+      console.log("User:", user?.displayName);
     if (initializing) {
       setInitializing(false);
     }
@@ -97,16 +91,6 @@ console.log(postsArray)
     });
   };
 
-  const handlePost = async () => {
-    try {const db = getDatabase();
-    set(ref(db, 'posts/' + postId), {
-      username: user?.displayName,
-      email: user?.email,
-    })} catch (error: any) {  
-       console.log( error.message,);
-      };  
-    }
-
   const renderItem = ({ item }: { item: any }) => (
     <View style={styles.userPostContainer}>
       <View style={styles.userContainer}>
@@ -128,21 +112,30 @@ console.log(postsArray)
         </View>
         <Text style={styles.imageText}>{item[1].imageName}</Text>
         <View style={styles.imageDescr}>
-          <View
-            style={{
-              flex: 1,
-              gap: 6,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <FontAwesome
-              name="comment-o"
-              size={24}
-              color="#BDBDBD"
+        <View style={{ flex: 1, flexDirection: "row", gap: 24 }}>
+            <Pressable
+              style={styles.descrItem}
               onPress={() => handleLinkToComments(item[0], item[1].postImage)}
-            />
-            <Text style={[styles.imageText, { color: "#BDBDBD" }]}>0</Text>
+            >
+              {!item[1].commentsCount ? (
+                <FontAwesome name="comment-o" size={24} color="#BDBDBD" />
+              ) : (
+                <FontAwesome name="comment" size={24} color="#FF6C00" />
+              )}
+              <Text style={[styles.imageText, { color: "#BDBDBD" }]}>
+                {item[1].commentsCount}
+              </Text>
+            </Pressable>
+            <View style={styles.descrItem}>
+              {!item[1].likesCount ? (
+                <AntDesign name="like2" size={24} color="#FF6C00" />
+              ) : (
+                <AntDesign name="like1" size={24} color="#FF6C00" />
+              )}
+              <Text style={[styles.imageText, { color: "#BDBDBD" }]}>
+                {item[1].likesCount}
+              </Text>
+            </View>
           </View>
           <Pressable
             onPress={() =>
@@ -168,14 +161,12 @@ console.log(postsArray)
 
   return (
     <View style={styles.container}>
-      <View><Text>Hello {user?.displayName}!</Text></View>
-      <FlatList
+      {postsArray.length > 0 ? <FlatList
         data={postsArray}
         keyExtractor={(item) => item[0]}
         renderItem={renderItem}
-       />
-
-      <Button title="AddPost" onPress={handlePost}/>
+       /> :
+       <Text style={{textAlign: "center"}}>There are no posts yet.</Text>}
     </View>
   );
 }
@@ -245,5 +236,10 @@ const styles = StyleSheet.create({
   imageDescr: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  descrItem: {
+    gap: 6,
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

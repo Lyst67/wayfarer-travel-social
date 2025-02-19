@@ -3,13 +3,11 @@ import React, { useState } from "react";
 import { router } from "expo-router";
 import { register } from "@/features/user/userSlice";
 import { useAppDispatch } from "@/hooks";
-import { registerWithProfile } from "@/features/user/authOperations";
-// import { getAuth, createUserWithEmailAndPassword, updateProfile } from '@react-native-firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from '@react-native-firebase/auth';
 
 import RegisterForm from "./registerForm";
 import LinkToSignButton from "./linkToSignButton";
 import UserImageComponent from "./userImageComponent";
-
 
 type UserData = {
   userName: string;
@@ -26,7 +24,7 @@ export default function RegisterComponent({
   const [formData, setFormData] = useState<UserData | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  // const auth = getAuth(firebase.app());
+  const auth = getAuth();
 
   const navToLogin = () => {
     const email = formData?.email;
@@ -36,75 +34,75 @@ export default function RegisterComponent({
     });
   };
 
-  const handleRegister = async (data: UserData | undefined) => {  
-    setLoading(true);  
-    setFormData(data);  
-    const email = data?.email;  
-    const password = data?.password;  
-    const userName = data?.userName;    
+  // const handleRegister = async (data: UserData | undefined) => {  
+  //   setLoading(true);  
+  //   setFormData(data);  
+  //   const email = data?.email;  
+  //   const password = data?.password;  
+  //   const userName = data?.userName;    
   
-    if (email && password) {  
-      const { success, data: userData, message } = await registerWithProfile(email, password, userName, userImage);  
+  //   if (email && password) {  
+  //     const { success, data: userData, message } = await registerWithProfile(email, password, userName, userImage);  
   
-      if (success && userData) {  
-        const {userDataEmail, userDataName, userDataImage, userId } = userData;  
-        dispatch(  
-          register({  
-            email: userDataEmail,  
-            userName: userDataName,  
-            userImage: userDataImage,  
-            userId: userId,  
-          })  
-        );  
-        Alert.alert(`Hello! ${userName}`);  
-        router.replace("/");  
-      } else {  
-        console.error("Error during registration: ", message);  
-        Alert.alert("Registration Error", message); 
-      }  
-    }  
-    setLoading(false);  
-  }; 
+  //     if (success && userData) {  
+  //       const {userDataEmail, userDataName, userDataImage, userId } = userData;  
+  //       dispatch(  
+  //         register({  
+  //           email: userDataEmail,  
+  //           userName: userDataName,  
+  //           userImage: userDataImage,  
+  //           userId: userId,  
+  //         })  
+  //       );  
+  //       Alert.alert(`Hello! ${userName}`);  
+  //       router.replace("/");  
+  //     } else {  
+  //       console.error("Error during registration: ", message);  
+  //       Alert.alert("Registration Error", message); 
+  //     }  
+  //   }  
+  //   setLoading(false);  
+  // }; 
 
-  // const handleRegister = async (data: UserData | undefined) => {
-  //   setLoading(true);
-  //   setFormData(data);
-  //   const email = data?.email;
-  //   const password = data?.password;
-  //   const userName = data?.username;
-  //   if (email && password) {
-  //     try {
-  //       const responce = await createUserWithEmailAndPassword(
-  //         auth,
-  //         email,
-  //         password
-  //       );
-  //       if (responce.user) {
-  //         console.log("New User:", responce.user)
-  //         await updateProfile( responce.user, {
-  //           displayName: `${userName}`,
-  //           photoURL: `${userImage}`,
-  //         });
-  //         const userId = responce.user.uid;
-  //         dispatch(
-  //           register({
-  //             email: email,
-  //             userName: userName,
-  //             userImage: userImage,
-  //             userId: userId,
-  //           })
-  //         );
-  //         Alert.alert(`Hello! ${userName}`);
-  //         router.replace("/");
-  //       }
-  //     } catch (err: any) {
-  //       console.log(err.message);
-  //       Alert.alert("Error:" + err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  // };
+  const handleRegister = async (data: UserData | undefined) => {
+    setLoading(true);
+    setFormData(data);
+    const email = data?.email;
+    const password = data?.password;
+    const userName = data?.userName;
+    if (email && password) {
+      try {
+        const responce = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        if (responce.user) {
+          console.log("New User:", responce.user)
+          await updateProfile( responce.user, {
+            displayName: `${userName}`,
+            photoURL: `${userImage}`,
+          });
+          const userId = responce.user.uid;
+          dispatch(
+            register({
+              email: email,
+              userName: userName,
+              userImage: userImage,
+              userId: userId,
+            })
+          );
+          Alert.alert(`Hello! ${userName}`);
+          router.replace("/");
+        }
+      } catch (err: any) {
+        console.log(err.message);
+        Alert.alert("Error:" + err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>

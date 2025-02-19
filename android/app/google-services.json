@@ -21,7 +21,7 @@
       ],
       "api_key": [
         {
-          "current_key": "process.env.GOOGLE_SERVICE_API_KEY"
+          "current_key": "process.env.EXPO_PUBLIC_GOOGLE_SERVICE_API_KEY"
         }
       ],
       "services": {
