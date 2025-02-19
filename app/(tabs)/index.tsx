@@ -31,16 +31,16 @@ export default function PostsScreen() {
   const [hasMounted, setHasMounted] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
   const [initializing, setInitializing] = useState<boolean>(true);
-  // const selectedPosts = useAppSelector(selectUserPosts);
-  // const postsArray = Object.entries(selectedPosts);
+  const selectedPosts = useAppSelector(selectUserPosts);
+  const postsArray = Object.entries(selectedPosts);
   const postArray: ArrayLike<any> | null | undefined = []
 const postId = nanoid()
 const auth = getAuth();
-
+console.log(postsArray)
 
   const currentUser = (user: FirebaseAuthTypes.User | null) => {
     setUser(user);
-      console.log("User:", user);
+//       console.log("User:", user);
     if (initializing) {
       setInitializing(false);
     }
@@ -48,7 +48,7 @@ const auth = getAuth();
 
   useEffect(() => {
     const subscriber = onAuthStateChanged(auth, currentUser);
-    // dispatch(fetchPosts());
+    dispatch(fetchPosts());
     return subscriber;
   }, []);
 
@@ -99,24 +99,13 @@ const auth = getAuth();
 
   const handlePost = async () => {
     try {const db = getDatabase();
-    set(ref(db, 'users/' + postId), {
+    set(ref(db, 'posts/' + postId), {
       username: user?.displayName,
       email: user?.email,
     })} catch (error: any) {  
        console.log( error.message,);
       };  
-    } 
-
-// const handlePost = () => {
-//    firebase.app().
-//   database().ref(`/posts/test`).set({Name: "Mango"})
-//       .then(() => {
-//         console.log('Post data written successfully!');
-//       })
-//       .catch((error) => {
-//         console.error('Error writing post data:', error);
-       
-//       });}
+    }
 
   const renderItem = ({ item }: { item: any }) => (
     <View style={styles.userPostContainer}>
@@ -169,7 +158,7 @@ const auth = getAuth();
             <Text
               style={[styles.imageText, { textDecorationLine: "underline" }]}
             >
-              {item[1].imageName}
+              {item[1].locationMark.split(",").slice(1)}
             </Text>
           </Pressable>
         </View>
@@ -181,7 +170,7 @@ const auth = getAuth();
     <View style={styles.container}>
       <View><Text>Hello {user?.displayName}!</Text></View>
       <FlatList
-        data={postArray}
+        data={postsArray}
         keyExtractor={(item) => item[0]}
         renderItem={renderItem}
        />

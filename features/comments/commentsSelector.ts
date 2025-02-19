@@ -1,7 +1,6 @@
 import { RootState } from "@/store";
 
 export const selectComments = (state: RootState) => state.comments.comments;
-export const selectedCommentedImage = (state: RootState) =>
-  state.comments.commentedImage;
-export const selectedCommentsCount = (state: RootState) =>
-  state.comments.commentsCount;
+export const selectCommentsIsLoading = (state: RootState) => state.comments.isLoading;
+export const selectCommentsError = (state: RootState) => state.comments.error;
+

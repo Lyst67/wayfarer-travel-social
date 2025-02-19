@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "628202126622",
+    "firebase_url": "https://wayfarerapp-345ee-default-rtdb.firebaseio.com",
     "project_id": "wayfarerapp-345ee",
     "storage_bucket": "wayfarerapp-345ee.firebasestorage.app"
   },
@@ -20,7 +21,7 @@
       ],
       "api_key": [
         {
-          "current_key": "process.env.GOOGLE_SERVICE_API_KEY"
+          "current_key": "AIzaSyCyeJ_xB3w_a2ma_pIPMA68h1uzU3X0GYI"
         }
       ],
       "services": {

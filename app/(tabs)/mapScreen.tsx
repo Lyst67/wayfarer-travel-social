@@ -20,8 +20,10 @@ export default function MapScreen({}) {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
 const initialRegion = {
-  latitude: 37.78825,
-  longitude: -122.4324,
+   latitude: 50.240864,
+//   latitude: 37.78825,
+longitude: 30.315664,
+//   longitude: -122.4324,
   latitudeDelta: 0.0922,
   longitudeDelta: 0.0421,
 };

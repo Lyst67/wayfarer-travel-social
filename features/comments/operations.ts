@@ -1,15 +1,21 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import db from "@react-native-firebase/database";
+import { createAsyncThunk, nanoid } from "@reduxjs/toolkit";
 import { Comment } from "./commentsSlice";
+import {getDatabase, set, ref, child, get, onChildAdded, onChildRemoved, update, onChildChanged} from "@react-native-firebase/database";
+
+const db = getDatabase()
 
 export const fetchComments = createAsyncThunk<Comment[], undefined>(
   "comments/fetchComments",
   async (_, { rejectWithValue }) => {
     try {
-      const snapshot = db().ref("/comments").once("value");
-      const data = (await snapshot).val();
-      return data as Comment[];
+      const refDb = ref(db)
+      const snapshot = get(child(refDb, "/components"));
+      if ((await snapshot).exists()) {
+        const data = (await snapshot).val();
+        return data as Comment[];
+      } else { return []}
     } catch (error) {
+      console.error("Error fetching comments:", error);
       return rejectWithValue(error);
     }
   }
@@ -20,8 +26,9 @@ export const createComment = createAsyncThunk<
   { commentData: Comment }
 >("comments/addComment", async ({ commentData }, { rejectWithValue }) => {
   try {
-    const usersComments = db().ref(`/comments`);
-    await usersComments.set({
+    const newCommentId = nanoid()
+    const commentRef = ref(db, `comments/` + newCommentId);
+    await set(commentRef, {
       commentedPostId: commentData.commentedPostId,
       commentedImage: commentData.commentedImage,
       commentId: commentData.commentId,
@@ -31,10 +38,11 @@ export const createComment = createAsyncThunk<
       commentTime: commentData.commentTime,
     });
     const newCommentData: Comment[] = [];
-    usersComments.on("child_added", function (data) {
-      const newComment = data.val();
-      newCommentData.push(newComment);
-    });
+    const commentsRef = ref(db, "/comments")
+       onChildAdded(commentsRef, (snapshot) => {
+         const newComment = snapshot.val();
+         newCommentData.push(newComment);
+       });
     return newCommentData[0] as Comment;
   } catch (error: any) {
     return rejectWithValue(error);
@@ -47,11 +55,12 @@ export const deleteComment = createAsyncThunk<
   { rejectValue: any }
 >("comments/delete", async (commentId, thunkAPI) => {
   try {
-    const commentData = db().ref(`/comments/${commentId}`);
+    const commentData = ref(db, `/comments/${commentId}`);
     await commentData.remove();
     const removedCommentData: Comment[] = [];
-    commentData.on("child_removed", function (data) {
-      const removedComment = data.val();
+    const commentsRef = ref(db, "comments")
+    onChildRemoved(commentsRef, (snapshot) => {
+      const removedComment = snapshot.val();
       removedCommentData.push(removedComment);
     });
     return removedCommentData[0] as Comment;
@@ -65,11 +74,19 @@ export const updateComment = createAsyncThunk<
   { commentId: string; commentData: Comment }
 >("posts/update", async ({ commentId, commentData }, { rejectWithValue }) => {
   try {
-    const userComment = db().ref(`/posts/${commentId}`);
-    await userComment.update(commentData);
-
-    const updatedCommentSnapshot = await userComment.once("value");
-    const updatedComment = updatedCommentSnapshot.val();
+    const userComment = ref(db, `/comments/${commentId}`);
+    await update(userComment, {
+      commentedPostId: commentData.commentedPostId,
+      commentedImage: commentData.commentedImage,
+      commentId: commentData.commentId,
+      commentText: commentData.commentText,
+      authorName: commentData.authorName,
+      authorImage: commentData.authorName,
+      commentTime: commentData.commentTime,
+    });
+    const commentsRef = ref(db, "comments")
+    const updatedCommentSnapshot = get(child(commentsRef, `/comments/${commentId}`));
+    const updatedComment = (await updatedCommentSnapshot).val();
     return updatedComment;
   } catch (error) {
     return rejectWithValue(error);

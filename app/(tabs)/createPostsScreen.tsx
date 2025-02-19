@@ -5,6 +5,8 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as Location from "expo-location";
@@ -17,14 +19,14 @@ import {
   selectUserId,
   selectUserImage,
 } from "@/features/user/userSelectors";
-import { nanoid } from "@reduxjs/toolkit";
-import database from "@react-native-firebase/database";
 
 import Feather from "@expo/vector-icons/Feather";
 import TabsCentreButton from "@/components/tabsCentreButton";
 import PostImageComponent from "@/components/postImageComponent";
 import PostInput from "@/components/postInput";
 import SubmitButton from "@/components/submitButton";
+import { createPost } from "@/features/posts/operations";
+import { selectError, selectIsLoading } from "@/features/posts/postsSelectors";
 
 export default function CreatePostsScreen() {
   const dispatch = useAppDispatch();
@@ -36,14 +38,16 @@ export default function CreatePostsScreen() {
   const [address, setAddress] = useState<
     Location.LocationGeocodedAddress[] | null
   >();
+  const [markText, setMarkText] = useState<string | null>();
+  const isLoading = useAppSelector(selectIsLoading)
+  const error = useAppSelector(selectError)
   const userId = useAppSelector(selectUserId);
   const userName = useAppSelector(selectName);
   const userEmail = useAppSelector(selectEmail);
   const userImage = useAppSelector(selectUserImage);
-  const postId = nanoid();
-
-
-  
+//   const likesCount = useAppSelector(selectComments);
+//   const commentsCount = useAppSelector(selectComments);
+ 
   const postData = {
     userId: userId,
     userName: userName,
@@ -52,36 +56,31 @@ export default function CreatePostsScreen() {
     postImage: postImage,
     imageName: postName,
     postLocation: location,
-    locationMark: postPlace,
+    locationMark: markText,
+//     likesCount:
+//     commentsCount:
   };
+
+//     useEffect(() => {
+//       if (address) {
+//         const text = JSON.stringify([address[0].region, address[0].country].join(","));
+//         setMarkText(text);
+//       }
+//     }, [address]);
 
   useEffect(() => {
     if (location) {
-      console.log(location)
-      database().ref(`/posts/${postId}`)
-     .set({
-      userId: postData.userId,
-      userName: postData.userName,
-      userEmail: postData.userEmail,
-      userImage: postData.userImage,
-      postImage: postData.postImage,
-      imageName: postData.imageName,
-      postLocation: postData.postLocation,
-      locationMark: postData.locationMark,
-    }).then(() => {
-      console.log('Post data written successfully!');
-     router.navigate("/");
-      setLocation(null);
-    })
-    .catch((error) => {
-      console.error('Error writing post data:', error);
-     
-    });
-//       dispatch(createPost({ postId, postData }));
+      dispatch(createPost({ postData }))
+          Alert.alert("Post successfully created!");
+                   router.replace("/")
+
     } else {
       setPostImage("");
       setPostName("");
       setPostPlace("");
+      setAddress("");
+      setMarkText("")
+      setLocation(null);
     }
   }, [location]);
 
@@ -102,6 +101,8 @@ export default function CreatePostsScreen() {
         setLocation(coords);
         if (address.length > 0) {
           setAddress(address);
+          const text = JSON.stringify([address[0].region, address[0].country].join(","));
+          setMarkText(text);
         } else {
           console.log("No address found for this location");
         }
@@ -117,19 +118,14 @@ export default function CreatePostsScreen() {
       alert("Please fill in all posts fields.");
       return;
     }
+if (!location) {
     await getCurrentLocation();
+    }
   };
 
   const handleCleanPost = () => {
     setLocation(null);
   };
-
-  let text = "Waiting...";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (address) {
-    text = JSON.stringify([address[0].region, address[0].country].join(","));
-  }
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()} style={{ flex: 1 }}>
@@ -139,20 +135,19 @@ export default function CreatePostsScreen() {
       >
         <View style={styles.contentContainer}>
           <PostImageComponent setPostImage={setPostImage} />
-
           <PostInput
             postPlace={setPostPlace}
             postName={setPostName}
             location={location}
-            text={text}
+            text={markText}
           />
           <View style={{ flex: 1, marginBottom: "auto" }}>
-            <SubmitButton
+            {isLoading ?  <ActivityIndicator size="large" /> : <SubmitButton
               backgroundColor={!postName || !postPlace ? "#F6F6F6" : "#FF6C00"}
               color={!postName || !postPlace ? "#BDBDBD" : "#FFF"}
               label="Опубліковати"
               onPress={handleSubmitPost}
-            />
+            />}
           </View>
         </View>
         <View style={styles.trashContainer}>

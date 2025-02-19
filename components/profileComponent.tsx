@@ -1,22 +1,24 @@
 import { View, Text, StyleSheet, Pressable, FlatList } from "react-native";
 import React, { useState } from "react";
-import UserImage from "./userImage";
-import ImageViewer from "./imageViwer";
 import { router } from "expo-router";
 import { LatLng } from "react-native-maps";
-import Feather from "@expo/vector-icons/Feather";
 import { useAppSelector } from "@/hooks";
-import { selectName, selectUserImage } from "@/features/user/userSelectors";
+import { selectName, selectUserImage, selectUserId } from "@/features/user/userSelectors";
 import { selectUserPosts } from "@/features/posts/postsSelectors";
+
+import UserImage from "./userImage";
+import ImageViewer from "./imageViwer";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function ProfileComponent() {
   const userImage = useAppSelector(selectUserImage);
   const userName = useAppSelector(selectName);
+  const currentUserId = useAppSelector(selectUserId)
   const selectedPosts = useAppSelector(selectUserPosts);
   const postsArray = Object.entries(selectedPosts);
-  //   const filteredComments = useAppSelector(selectFilteredComments(postId));
+  const filteredComments = postsArray.filter(item => item[1].userId === currentUserId);
 
   const handleLinkToMapScreen = (location: LatLng, locationMark: string) => {
     router.push({
@@ -47,32 +49,42 @@ export default function ProfileComponent() {
         </View>
         <Text style={styles.imageText}>{item[1].imageName}</Text>
         <View style={styles.imageDescr}>
-          <View style={{flex:1, flexDirection: "row", gap: 24}}>
-              <View style={styles.descrItem}>
-                <FontAwesome
-                   name="comment"
-                   size={24}
-                   color="#FF6C00"
-                   onPress={() => handleLinkToComments(item[0], item[1].postImage)}
-                  />
-                  <Text style={[styles.imageText, { color: "#BDBDBD" }]}>0</Text>
-              </View>
-              <View style={styles.descrItem}>  
-                  <AntDesign name="like2" size={24} color="#FF6C00" />
-                  <Text style={[styles.imageText, { color: "#BDBDBD" }]}>10</Text>
-              </View>  
+          <View style={{ flex: 1, flexDirection: "row", gap: 24 }}>
+            <Pressable
+              style={styles.descrItem}
+              onPress={() => handleLinkToComments(item[0], item[1].postImage)}
+            >
+              {!item[1].commentsCount ? (
+                <FontAwesome name="comment-o" size={24} color="#BDBDBD" />
+              ) : (
+                <FontAwesome name="comment" size={24} color="#FF6C00" />
+              )}
+              <Text style={[styles.imageText, { color: "#BDBDBD" }]}>
+                {item[1].commentsCount}
+              </Text>
+            </Pressable>
+            <View style={styles.descrItem}>
+              {!item[1].likesCount ? (
+                <AntDesign name="like2" size={24} color="#FF6C00" />
+              ) : (
+                <AntDesign name="like1" size={24} color="#FF6C00" />
+              )}
+              <Text style={[styles.imageText, { color: "#BDBDBD" }]}>
+                {item[1].likesCount}
+              </Text>
+            </View>
           </View>
           <Pressable
             onPress={() =>
               handleLinkToMapScreen(item[1].postLocation, item[1].locationMark)
             }
-            style={[styles.descrItem, {gap: 4}]}
+            style={[styles.descrItem, { gap: 4 }]}
           >
             <Feather name="map-pin" size={24} color="#BDBDBD" />
             <Text
               style={[styles.imageText, { textDecorationLine: "underline" }]}
             >
-              {item[1].imageName}
+              {item[1].locationMark.split(",").slice(1)}
             </Text>
           </Pressable>
         </View>
@@ -86,14 +98,13 @@ export default function ProfileComponent() {
         <UserImage selectedImage={userImage} />
       </View>
       <Text style={styles.text}>{userName}</Text>
-    
-        <FlatList 
-          data={postsArray}
-          renderItem={renderItem}
-          keyExtractor={(item) => item[0]}
-          onEndReachedThreshold={0.5}
-        />
-     
+
+      <FlatList
+        data={filteredComments}
+        renderItem={renderItem}
+        keyExtractor={(item) => item[0]}
+        onEndReachedThreshold={0.5}
+      />
     </View>
   );
 }
@@ -153,7 +164,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   imageDescr: {
-    flex:1,
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -161,5 +172,5 @@ const styles = StyleSheet.create({
     gap: 6,
     flexDirection: "row",
     alignItems: "center",
-  }
+  },
 });

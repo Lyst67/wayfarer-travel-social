@@ -11,14 +11,14 @@ export interface Post {
   imageName: null | undefined | string;
   postLocation: LatLng | null;
   locationMark: null | string | undefined;
-  likesCount?: null | number;
-  commentsCount?: null | number;
+  likesCount: null | number;
+  commentsCount: null | number;
 }
-export interface PostItem {
-  [postId: string]: Post;
-}
+// export interface PostItem {
+//   [postId: string]: Post;
+// }
 export interface PostsState {
-  posts: PostItem[];
+  posts: Post[];
   isLoading: boolean;
   error: any;
 }

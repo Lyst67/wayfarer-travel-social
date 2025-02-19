@@ -1,27 +1,34 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { Post, PostItem } from "./postsSlice";
-import db from "@react-native-firebase/database";
+import { createAsyncThunk, nanoid } from "@reduxjs/toolkit";
+import { Post } from "./postsSlice";
+import { getDatabase, set, ref, child, get, onChildAdded, onChildRemoved, update, onChildChanged} from "@react-native-firebase/database";
 
-export const fetchPosts = createAsyncThunk<PostItem[], undefined>(
+const db = getDatabase();
+
+export const fetchPosts = createAsyncThunk<Post[], undefined>(
   "posts/fetchPosts",
   async (_, { rejectWithValue }) => {
     try {
-      const snapshot = db().ref("/posts").once("value");
-      const data = (await snapshot).val();
-      return data as PostItem[];
+      const refDb = ref(db)
+      const snapshot = get(child(refDb, "/posts"));
+      if ((await snapshot).exists()) {
+        const data = await (await snapshot).val()
+        return data as Post[]
+      } else {return []}
     } catch (error) {
+      console.error("Error fetching posts:", error);
       return rejectWithValue(error);
     }
   }
 );
 
 export const createPost = createAsyncThunk<
-  PostItem,
-  { postId: any; postData: Post }
->("posts/addPost", async ({ postId, postData }, { rejectWithValue }) => {
+  Post,
+  { postData: Post }
+>("posts/addPost", async ({ postData }, { rejectWithValue }) => {
   try {
-    const usersPosts = db().ref(`/posts/${postId}`);
-    await usersPosts.set({
+    const postId = nanoid()
+    const postRef = ref(db, "posts/" + postId);
+    set(postRef, {
       userId: postData.userId,
       userName: postData.userName,
       userEmail: postData.userEmail,
@@ -33,52 +40,64 @@ export const createPost = createAsyncThunk<
       likesCount: postData.likesCount,
       commentsCount: postData.commentsCount,
     });
-    const newPostData: PostItem[] = [];
-    usersPosts.on("child_added", function (data) {
-      const newPost = data.val();
+    const newPostData: Post[] = [];
+    const postsRef = db.ref("/posts")
+    onChildAdded(postsRef, (snapshot) => {
+      const newPost = snapshot.val();
       newPostData.push(newPost);
     });
-    return newPostData[0] as PostItem;
-    // const userPost = db().ref(`/posts/${postId}`);
-    // const userPostDataSnapshot = await userPost.once("value");
-    // const userPostData = userPostDataSnapshot.val();
-    // return userPostData as PostItem;
+    return newPostData[0] as Post;
   } catch (error) {
     return rejectWithValue(error);
   }
 });
 
 export const deletePost = createAsyncThunk<
-  PostItem,
+  Post,
   string,
   { rejectValue: any }
 >("posts/delete", async (postId, thunkAPI) => {
   try {
-    const postData = db().ref(`/posts/${postId}`);
-    await postData.remove();
-    const removedPostData: PostItem[] = [];
-    postData.on("child_removed", function (data) {
-      const removedPost = data.val();
+    const postRef = ref(db, `/posts/${postId}`);
+    await postRef.remove();
+    const removedPostData: Post[] = [];
+    const postsRef = db.ref("/posts")
+    onChildRemoved(postsRef, (snapshot) => {
+      const removedPost = snapshot.val();
       removedPostData.push(removedPost);
     });
-    return removedPostData[0] as PostItem;
-    // return postId;
+    return removedPostData[0] as Post;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
 });
 
 export const updatePost = createAsyncThunk<
-  PostItem,
-  { postId: string; postData: Post }
->("posts/update", async ({ postId, postData }, { rejectWithValue }) => {
+  Post,
+  { postId: string, postData: Post }
+>("posts/update", async ( { postId, postData }, { rejectWithValue }) => {
   try {
-    const userPost = db().ref(`/posts/${postId}`);
-    await userPost.update(postData);
+    const userPostRef = ref(db, `/posts/${postId}`);
+    await update(userPostRef, {
+      userId: postData.userId,
+      userName: postData.userName,
+      userEmail: postData.userEmail,
+      userImage: postData.userImage,
+      postImage: postData.postImage,
+      imageName: postData.imageName,
+      postLocation: postData.postLocation,
+      locationMark: postData.locationMark,
+      likesCount: postData.likesCount,
+      commentsCount: postData.commentsCount,
+    });
 
-    const updatedPostSnapshot = await userPost.once("value");
-    const updatedPost = updatedPostSnapshot.val();
-    return { [postId]: updatedPost };
+    const changedPostData: Post[] = [];
+    const postsRef = db.ref("/posts")
+    onChildChanged(postsRef, function (snapshot) {
+      const changedPost = snapshot.val();
+      changedPostData.push(changedPost);
+    });
+    return changedPostData[0] as Post;
   } catch (error) {
     return rejectWithValue(error);
   }

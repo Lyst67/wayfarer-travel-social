@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
+  ListRenderItem,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import ImageViewer from "@/components/imageViwer";
@@ -19,6 +20,8 @@ import { createComment, fetchComments } from "@/features/comments/operations";
 import { selectComments } from "@/features/comments/commentsSelector";
 import { nanoid } from "@reduxjs/toolkit";
 import { selectName, selectUserImage } from "@/features/user/userSelectors";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import UserImage from "@/components/userImage";
 
 export default function CommentsScreen() {
   const [commentText, setCommentText] = useState("");
@@ -27,7 +30,6 @@ export default function CommentsScreen() {
     selectedImage: string;
   }>();
   const dispatch = useAppDispatch();
-  const comments = useAppSelector(selectComments);
   const commentId = nanoid();
   const authorName = useAppSelector(selectName);
   const authorImage = useAppSelector(selectUserImage);
@@ -44,13 +46,8 @@ export default function CommentsScreen() {
       { date: [], clock: "" }
     );
   const commentTime = `${formatData.date.join(" ")} | ${formatData.clock}`;
-
-  // console.log(Array.isArray(comments)); // true
-
-  useEffect(() => {
-    dispatch(fetchComments());
-  }, []);
-
+  const comments = useAppSelector(selectComments);
+  const commentsArray = Object.entries(comments)
   const commentData = {
     commentedPostId: selectedPostId,
     commentedImage: selectedImage,
@@ -60,6 +57,26 @@ export default function CommentsScreen() {
     authorImage: authorImage,
     commentTime: commentTime,
   };
+
+  const renderItem = ({ item }: { item: any }) => (<View style={styles.commentContainer}>
+      <View style={styles.userPhotoContainer}>{!item[1].userImage ? (
+            <FontAwesome5 name="user" size={44} color="lightgrey" />
+          ) : (
+            <UserImage selectedImage={item[1].authorImage} />
+          )}</View>
+    <View style={styles.commentTextContainer}>
+      <Text style={styles.commentText}>{item[1].commentText}</Text>
+    <Text style={styles.commantTime}>{item[1].commentTime}</Text>
+    </View>
+    </View>)
+    
+
+  
+
+  useEffect(() => {
+    dispatch(fetchComments());
+  }, []);
+
   const handleAddComment = () => {
     dispatch(createComment({ commentData }));
   };
@@ -73,13 +90,13 @@ export default function CommentsScreen() {
         <View style={{ flex: 1 }}>
           {comments.length > 0 ? (
             <FlatList
-              data={comments}
-              keyExtractor={(item) => item.commentId}
-              renderItem={({ item }) => <Text>{item.authorName}</Text>}
+              data={commentsArray}
+              keyExtractor={(item) => item[0]}
+              renderItem={renderItem}
             />
-          ) : (
-            <Text>There are no comments yet.</Text>
-          )}
+           ) : (
+            <Text style={{textAlign: "center"}}>There are no comments yet.</Text>
+          )} 
         </View>
         <KeyboardAvoidingView
           behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -129,6 +146,42 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderColor: "#E8E8E8",
     backgroundColor: "#F6F6F6",
+  },
+  commentContainer: {
+flex:1,
+gap:16,
+marginBottom: 24,
+  },
+  userPhotoContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "gray",
+    overflow: "hidden",
+  },
+  commentTextContainer: {
+    flex:1,
+    gap: 8,
+    padding: 16,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 6,
+    overflow: "hidden",
+  },
+  commentText:{
+    color: "#212121",
+    fontFamily: "Roboto",
+    fontSize: 13,
+    fontWeight: 400,
+    lineHeight: 18,
+  },
+  commantTime:{
+    color:"#BDBDBD",
+    fontFamily: "Roboto",
+    fontSize: 10,
+    fontWeight: 400,
+    textAlign: "right",
   },
   inputContainer: {
     flexDirection: "row",
