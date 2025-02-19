@@ -21,7 +21,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCyeJ_xB3w_a2ma_pIPMA68h1uzU3X0GYI"
+          "current_key": "process.env.GOOGLE_SERVICE_API_KEY"
         }
       ],
       "services": {
