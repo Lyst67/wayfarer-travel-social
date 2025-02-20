@@ -61,13 +61,6 @@ export default function CreatePostsScreen() {
 //     commentsCount:
   };
 
-//     useEffect(() => {
-//       if (address) {
-//         const text = JSON.stringify([address[0].region, address[0].country].join(","));
-//         setMarkText(text);
-//       }
-//     }, [address]);
-
   useEffect(() => {
     if (location) {
       dispatch(createPost({ postData }))

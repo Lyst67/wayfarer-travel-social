@@ -9,16 +9,16 @@ export const fetchComments = createAsyncThunk<Comment[], undefined>(
   async (_, { rejectWithValue }) => {
     try {
       const refDb = ref(db)
-      const snapshot = get(child(refDb, "/components"));
+      const snapshot = get(child(refDb, "/comments"));
       if ((await snapshot).exists()) {
-        const data = (await snapshot).val();
+        const data = await (await snapshot).val();
         return data as Comment[];
       } else { return []}
     } catch (error) {
       console.error("Error fetching comments:", error);
       return rejectWithValue(error);
     }
-  }
+//   }
 );
 
 export const createComment = createAsyncThunk<

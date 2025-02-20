@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ListRenderItem,
+  Alert
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import ImageViewer from "@/components/imageViwer";
@@ -47,6 +48,7 @@ export default function CommentsScreen() {
     );
   const commentTime = `${formatData.date.join(" ")} | ${formatData.clock}`;
   const comments = useAppSelector(selectComments);
+  console.log(comments)
   const commentData = {
     commentedPostId: selectedPostId,
     commentedImage: selectedImage,
@@ -56,6 +58,15 @@ export default function CommentsScreen() {
     authorImage: authorImage,
     commentTime: commentTime,
   };
+
+   useEffect(() => {
+      dispatch(fetchComments());
+    }, []);
+
+    const handleAddComment = () => {
+      dispatch(createComment({ commentData }));
+      Alert.alert("Comment successfully created!");
+    };
 
   const renderItem = ({ item }: { item: any }) => (<View style={styles.commentContainer}>
       <View style={styles.userPhotoContainer}>{!item[1].userImage ? (
@@ -68,17 +79,6 @@ export default function CommentsScreen() {
     <Text style={styles.commantTime}>{item[1].commentTime}</Text>
     </View>
     </View>)
-    
-
-  
-
-  useEffect(() => {
-    dispatch(fetchComments());
-  }, []);
-
-  const handleAddComment = () => {
-    dispatch(createComment({ commentData }));
-  };
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()} style={{ flex: 1 }}>
@@ -112,9 +112,7 @@ export default function CommentsScreen() {
             />
             <Pressable
               style={styles.commentButton}
-              onPress={() => {
-                handleAddComment;
-              }}
+              onPress={() => handleAddComment()}
             >
               <Ionicons name="arrow-up" size={24} color="#FFFFFF" />
             </Pressable>
