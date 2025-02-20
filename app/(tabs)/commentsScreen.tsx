@@ -47,7 +47,6 @@ export default function CommentsScreen() {
     );
   const commentTime = `${formatData.date.join(" ")} | ${formatData.clock}`;
   const comments = useAppSelector(selectComments);
-  const commentsArray = Object.entries(comments)
   const commentData = {
     commentedPostId: selectedPostId,
     commentedImage: selectedImage,
@@ -90,7 +89,7 @@ export default function CommentsScreen() {
         <View style={{ flex: 1 }}>
           {comments.length > 0 ? (
             <FlatList
-              data={commentsArray}
+              data={comments}
               keyExtractor={(item) => item[0]}
               renderItem={renderItem}
             />

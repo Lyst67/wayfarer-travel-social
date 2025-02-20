@@ -34,36 +34,6 @@ export default function RegisterComponent({
     });
   };
 
-  // const handleRegister = async (data: UserData | undefined) => {  
-  //   setLoading(true);  
-  //   setFormData(data);  
-  //   const email = data?.email;  
-  //   const password = data?.password;  
-  //   const userName = data?.userName;    
-  
-  //   if (email && password) {  
-  //     const { success, data: userData, message } = await registerWithProfile(email, password, userName, userImage);  
-  
-  //     if (success && userData) {  
-  //       const {userDataEmail, userDataName, userDataImage, userId } = userData;  
-  //       dispatch(  
-  //         register({  
-  //           email: userDataEmail,  
-  //           userName: userDataName,  
-  //           userImage: userDataImage,  
-  //           userId: userId,  
-  //         })  
-  //       );  
-  //       Alert.alert(`Hello! ${userName}`);  
-  //       router.replace("/");  
-  //     } else {  
-  //       console.error("Error during registration: ", message);  
-  //       Alert.alert("Registration Error", message); 
-  //     }  
-  //   }  
-  //   setLoading(false);  
-  // }; 
-
   const handleRegister = async (data: UserData | undefined) => {
     setLoading(true);
     setFormData(data);

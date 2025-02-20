@@ -17,8 +17,7 @@ export default function ProfileComponent() {
   const userName = useAppSelector(selectName);
   const currentUserId = useAppSelector(selectUserId)
   const selectedPosts = useAppSelector(selectUserPosts);
-  const postsArray = Object.entries(selectedPosts);
-  const filteredComments = postsArray.filter(item => item[1].userId === currentUserId);
+  const filteredComments = selectedPosts.filter(item => item[1].userId === currentUserId);
 
   const handleLinkToMapScreen = (location: LatLng, locationMark: string) => {
     router.push({
@@ -60,7 +59,7 @@ export default function ProfileComponent() {
                 <FontAwesome name="comment" size={24} color="#FF6C00" />
               )}
               <Text style={[styles.imageText, { color: "#BDBDBD" }]}>
-                {item[1].commentsCount}
+                {item[1].commentsCount ? item[1].commentsCount : 0}
               </Text>
             </Pressable>
             <View style={styles.descrItem}>
@@ -70,7 +69,7 @@ export default function ProfileComponent() {
                 <AntDesign name="like1" size={24} color="#FF6C00" />
               )}
               <Text style={[styles.imageText, { color: "#BDBDBD" }]}>
-                {item[1].likesCount}
+                {item[1].likesCount ? item[1].likesCount : 0}
               </Text>
             </View>
           </View>

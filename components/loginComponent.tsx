@@ -29,33 +29,6 @@ export default function LoginComponent({ userEmail }: { userEmail: string }) {
     });
   };
 
-//   const handleLogin = async (data: UserData | undefined) => {
-//     setLoading(true);
-//     setFormData(data);
-//     const email = data?.email;
-//     const password = data?.password;
-//     if (email && password) {
-//       const { success, data: userData, message } = await loginWithEmailAndPassword(email, password);
-//       if (success && userData) {
-//         const { userName, userImage, userId } = userData;
-//         dispatch(
-//           login({
-//             email: email,
-//             userName: userName,
-//             userImage: userImage,
-//             userId: userId,
-//           })
-//         );
-//         Alert.alert(`Hello! ${userName}`);
-//         router.replace("/");
-//       } else {
-//         console.log(message);
-//         Alert.alert("Error:" + message);
-//       }
-//
-//       setLoading(false);
-//     } }
-
   const handleLogin = async (data: UserData | undefined) => {
     setLoading(true);
     setFormData(data);

@@ -29,7 +29,6 @@ export default function PostsScreen() {
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
   const [initializing, setInitializing] = useState<boolean>(true);
   const selectedPosts = useAppSelector(selectUserPosts);
-  const postsArray = Object.entries(selectedPosts);
   const auth = getAuth();
 
   const currentUser = (user: FirebaseAuthTypes.User | null) => {
@@ -123,7 +122,7 @@ export default function PostsScreen() {
                 <FontAwesome name="comment" size={24} color="#FF6C00" />
               )}
               <Text style={[styles.imageText, { color: "#BDBDBD" }]}>
-                {item[1].commentsCount}
+                {item[1].commentsCount ? item[1].commentsCount : 0}
               </Text>
             </Pressable>
             <View style={styles.descrItem}>
@@ -133,7 +132,7 @@ export default function PostsScreen() {
                 <AntDesign name="like1" size={24} color="#FF6C00" />
               )}
               <Text style={[styles.imageText, { color: "#BDBDBD" }]}>
-                {item[1].likesCount}
+                {item[1].likesCount ? item[1].likesCount : 0}
               </Text>
             </View>
           </View>
@@ -161,8 +160,8 @@ export default function PostsScreen() {
 
   return (
     <View style={styles.container}>
-      {postsArray.length > 0 ? <FlatList
-        data={postsArray}
+      {selectedPosts.length > 0 ? <FlatList
+        data={selectedPosts}
         keyExtractor={(item) => item[0]}
         renderItem={renderItem}
        /> :
