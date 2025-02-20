@@ -18,7 +18,7 @@ export const fetchComments = createAsyncThunk<Comment[], undefined>(
       console.error("Error fetching comments:", error);
       return rejectWithValue(error);
     }
-//   }
+  }
 );
 
 export const createComment = createAsyncThunk<
