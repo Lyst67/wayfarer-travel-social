@@ -18,20 +18,22 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { createComment, fetchComments } from "@/features/comments/operations";
-import { selectComments } from "@/features/comments/commentsSelector";
+import { selectComments, selectCommentsError } from "@/features/comments/commentsSelector";
 import { nanoid } from "@reduxjs/toolkit";
-import { selectName, selectUserImage } from "@/features/user/userSelectors";
+import { selectName, selectUserId, selectUserImage } from "@/features/user/userSelectors";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import UserImage from "@/components/userImage";
 
 export default function CommentsScreen() {
   const [commentText, setCommentText] = useState("");
-  const { selectedPostId, selectedImage } = useLocalSearchParams<{
+  const { selectedPostId, postAuthorId, selectedImage } = useLocalSearchParams<{
     selectedPostId: string;
+    postAuthorId: string;
     selectedImage: string;
   }>();
   const dispatch = useAppDispatch();
   const commentId = nanoid();
+  const commentAuthorId = useAppSelector(selectUserId)
   const authorName = useAppSelector(selectName);
   const authorImage = useAppSelector(selectUserImage);
   const formatData = new Date()
@@ -49,39 +51,50 @@ export default function CommentsScreen() {
   const commentTime = `${formatData.date.join(" ")} | ${formatData.clock}`;
   const comments = useAppSelector(selectComments);
   const commentsArray = Object.entries(comments);
-  
-  console.log(comments)
+  const filteredComments = commentsArray.filter(item => item[1].commentedPostId === selectedPostId)
 
   const commentData = {
+    commentId: commentId,
     commentedPostId: selectedPostId,
     commentedImage: selectedImage,
-    commentId: commentId,
+    commentedImageAuthorId: postAuthorId,
+    commentAuthorId: commentAuthorId,
     commentText: commentText,
     authorName: authorName,
     authorImage: authorImage,
     commentTime: commentTime,
   };
+// console.log(comments);
 
    useEffect(() => {
       dispatch(fetchComments());
     }, []);
 
-    const handleAddComment = () => {
-      dispatch(createComment({ commentData }));
-      Alert.alert("Comment successfully created!");
-    };
+    const handleAddComment = async () => {  
+      try {  
+        await dispatch(createComment({ commentData })).unwrap();  
+        Alert.alert("Comment successfully created!");  
+        setCommentText(""); 
+        await dispatch(fetchComments());  
+      } catch (error: any) {  
+        Alert.alert("Error adding comment", error); 
+        console.log(error);
+         
+      }  
+    }; 
 
-  // const renderItem = ({ item }: { item: any }) => (<View style={styles.commentContainer}>
-  //     <View style={styles.userPhotoContainer}>{!item[1].userImage ? (
-  //           <FontAwesome5 name="user" size={44} color="lightgrey" />
-  //         ) : (
-  //           <UserImage selectedImage={item[1].authorImage} />
-  //         )}</View>
-  //   <View style={styles.commentTextContainer}>
-  //     <Text style={styles.commentText}>{item[1].commentText}</Text>
-  //   <Text style={styles.commantTime}>{item[1].commentTime}</Text>
-  //   </View>
-  //   </View>)
+  const renderItem = ({ item }: { item: any }) => (
+      <View style={styles.commentContainer}>
+      <View style={styles.userPhotoContainer}>{!item[1].authorImage ? (
+            <FontAwesome5 name="user" size={24} color="lightgrey" />
+          ) : (
+            <UserImage selectedImage={item[1].authorImage} />
+          )}</View>
+    <View style={styles.commentTextContainer}>
+      <Text style={styles.commentText}>{item[1].commentText}</Text>
+    <Text style={[styles.commentTime, item[1].commentedImageAuthorId !== commentAuthorId && {textAlign: "right"}]}>{item[1].commentTime}</Text>
+    </View>
+    </View>)
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()} style={{ flex: 1 }}>
@@ -90,11 +103,11 @@ export default function CommentsScreen() {
           <ImageViewer selectedImage={selectedImage} />
         </View>
         <View style={{ flex: 1 }}>
-          {comments.length > 0 ? (
+          {filteredComments.length ? (
             <FlatList
-              data={commentsArray}
+              data={filteredComments}
               keyExtractor={(item) => item[0]}
-              renderItem={({item}) => <Text>item</Text>}
+              renderItem={renderItem}
             />
            ) : (
             <Text style={{textAlign: "center"}}>There are no comments yet.</Text>
@@ -106,6 +119,8 @@ export default function CommentsScreen() {
           <SafeAreaView style={styles.inputContainer}>
             <TextInput
               style={styles.input}
+              maxLength={150}
+              multiline={true}
               placeholder="Коментувати..."
               placeholderTextColor="#BDBDBD"
               value={commentText}
@@ -148,7 +163,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F6F6",
   },
   commentContainer: {
+      width: 343,
 flex:1,
+flexDirection: "row",
 gap:16,
 marginBottom: 24,
   },
@@ -176,14 +193,14 @@ marginBottom: 24,
     fontWeight: 400,
     lineHeight: 18,
   },
-  commantTime:{
+  commentTime:{
     color:"#BDBDBD",
     fontFamily: "Roboto",
     fontSize: 10,
     fontWeight: 400,
-    textAlign: "right",
   },
   inputContainer: {
+      width: 343,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -192,10 +209,11 @@ marginBottom: 24,
     fontFamily: "Inter-Black",
     fontSize: 16,
     fontWeight: 500,
-    paddingHorizontal: 16,
+    paddingLeft: 16,
+    paddingRight: 46,
     paddingVertical: 16,
-    width: 343,
-    borderRadius: 25,
+    width: "100%",
+    borderRadius: 24,
     borderWidth: 1,
     borderColor: "#E8E8E8",
     backgroundColor: "#F6F6F6",

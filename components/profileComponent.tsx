@@ -18,7 +18,7 @@ export default function ProfileComponent() {
   const currentUserId = useAppSelector(selectUserId)
   const selectedPosts = useAppSelector(selectUserPosts);
   const postsArray = Object.entries(selectedPosts)
-  const filteredComments = postsArray.filter(item => item[1].userId === currentUserId);
+  const filteredPosts = postsArray.filter(item => item[1].userId === currentUserId);
 
   const handleLinkToMapScreen = (location: LatLng, locationMark: string) => {
     router.push({
@@ -98,8 +98,8 @@ export default function ProfileComponent() {
         <UserImage selectedImage={userImage} />
       </View>
       <Text style={styles.text}>{userName}</Text>
-       {selectedPosts.length > 0 ? <FlatList
-        data={postsArray}
+       {filteredPosts.length ? <FlatList
+        data={filteredPosts}
         keyExtractor={(item) => item[0]}
         renderItem={renderItem}
        /> :

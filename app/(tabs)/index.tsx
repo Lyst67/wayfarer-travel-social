@@ -31,7 +31,7 @@ export default function PostsScreen() {
   const auth = getAuth();
   const selectedPosts = useAppSelector(selectUserPosts);
   const postsArray = Object.entries(selectedPosts)
-  // console.log(selectedPosts);
+//   console.log(selectedPosts);
   
 
   const currentUser = (user: FirebaseAuthTypes.User | null) => {
@@ -83,11 +83,12 @@ export default function PostsScreen() {
     });
   };
 
-  const handleLinkToComments = (postId: string, postImage: string) => {
+  const handleLinkToComments = (postId: string, authorId: string, postImage: string) => {
     router.push({
       pathname: "/(tabs)/commentsScreen",
       params: {
         selectedPostId: postId,
+        postAuthorId: authorId,
         selectedImage: postImage,
       },
     });
@@ -117,7 +118,7 @@ export default function PostsScreen() {
         <View style={{ flex: 1, flexDirection: "row", gap: 24 }}>
             <Pressable
               style={styles.descrItem}
-              onPress={() => handleLinkToComments(item[0], item[1].postImage)}
+              onPress={() => handleLinkToComments(item[0], item[1].userId, item[1].postImage)}
             >
               {!item[1].commentsCount ? (
                 <FontAwesome name="comment-o" size={24} color="#BDBDBD" />
@@ -163,7 +164,7 @@ export default function PostsScreen() {
 
   return (
     <View style={styles.container}>
-      {selectedPosts.length > 0 ? <FlatList
+      {postsArray.length ? <FlatList
         data={postsArray}
         keyExtractor={(item) => item[0]}
         renderItem={renderItem}

@@ -7,9 +7,11 @@ import {
 } from "./operations";
 
 export interface Comment {
+  commentId: string;
   commentedPostId: string;
   commentedImage: string | null;
-  commentId: string;
+  commentedImageAuthorId: null | string;
+  commentAuthorId: null | string;
   commentText: null | string;
   authorName: null | string;
   authorImage: null | string;

@@ -29,12 +29,14 @@ export const createComment = createAsyncThunk<
     const newCommentId = nanoid()
     const commentRef = ref(db, `comments/` + newCommentId);
     await set(commentRef, {
+      commentId: commentData.commentId,
       commentedPostId: commentData.commentedPostId,
       commentedImage: commentData.commentedImage,
-      commentId: commentData.commentId,
+      commentedImageAuthorId: commentData.commentedImageAuthorId,
+      commentAuthorId: commentData.commentAuthorId,
       commentText: commentData.commentText,
       authorName: commentData.authorName,
-      authorImage: commentData.authorName,
+      authorImage: commentData.authorImage,
       commentTime: commentData.commentTime,
     });
     const newCommentData: Comment[] = [];
@@ -76,9 +78,11 @@ export const updateComment = createAsyncThunk<
   try {
     const userComment = ref(db, `/comments/${commentId}`);
     await update(userComment, {
+      commentId: commentData.commentId,
       commentedPostId: commentData.commentedPostId,
       commentedImage: commentData.commentedImage,
-      commentId: commentData.commentId,
+      commentedImageAuthorId: commentData.commentedImageAuthorId,
+      commentAuthorId: commentData.commentAuthorId,
       commentText: commentData.commentText,
       authorName: commentData.authorName,
       authorImage: commentData.authorName,

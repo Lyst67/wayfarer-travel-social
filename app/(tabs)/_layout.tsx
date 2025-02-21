@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { logOut } from "@/features/user/userSlice";
 import { Alert } from "react-native";
 import { logout } from "@/features/user/authOperations";
-// import { getAuth, signOut } from '@react-native-firebase/auth';
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -17,7 +16,6 @@ export const unstable_settings = {
 
 export default function ScreensLayout() {
   const dispatch = useDispatch();
-  // const auth = getAuth();
 
   const handleLogOut = async () => {  
     const { success, message } = await logout();  
@@ -30,13 +28,6 @@ export default function ScreensLayout() {
       Alert.alert("Logout Error", message);  
     }  
   };  
-
-  // const handleLogOut = () => {
-  //   signOut(auth)
-  //     .then(() => console.log("User signed out!"))
-  //     .catch((error: any) => console.error("Error signing out: ", error));
-  //   dispatch(logOut());
-  // };
 
   return (
     <Tabs
