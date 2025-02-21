@@ -9,7 +9,6 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
-  ListRenderItem,
   Alert
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -18,7 +17,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { createComment, fetchComments } from "@/features/comments/operations";
-import { selectComments, selectCommentsError } from "@/features/comments/commentsSelector";
+import { selectComments } from "@/features/comments/commentsSelector";
 import { nanoid } from "@reduxjs/toolkit";
 import { selectName, selectUserId, selectUserImage } from "@/features/user/userSelectors";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -84,17 +83,36 @@ export default function CommentsScreen() {
     }; 
 
   const renderItem = ({ item }: { item: any }) => (
-      <View style={styles.commentContainer}>
-      <View style={styles.userPhotoContainer}>{!item[1].authorImage ? (
-            <FontAwesome5 name="user" size={24} color="lightgrey" />
-          ) : (
-            <UserImage selectedImage={item[1].authorImage} />
-          )}</View>
-    <View style={styles.commentTextContainer}>
-      <Text style={styles.commentText}>{item[1].commentText}</Text>
-    <Text style={[styles.commentTime, item[1].commentedImageAuthorId !== commentAuthorId && {textAlign: "right"}]}>{item[1].commentTime}</Text>
+    <View
+      style={[
+        styles.commentContainer,
+        item[1].commentedImageAuthorId === item[1].commentAuthorId && {
+          flexDirection: "row-reverse",
+        },
+      ]}
+    >
+      <View style={[styles.userPhotoContainer]}>
+        {!item[1].authorImage ? (
+          <FontAwesome5 name="user" size={24} color="lightgrey" />
+        ) : (
+          <UserImage selectedImage={item[1].authorImage} />
+        )}
+      </View>
+      <View style={styles.commentTextContainer}>
+        <Text style={styles.commentText}>{item[1].commentText}</Text>
+        <Text
+          style={[
+            styles.commentTime,
+            item[1].commentedImageAuthorId !== item[1].commentAuthorId && {
+              textAlign: "right",
+            },
+          ]}
+        >
+          {item[1].commentTime}
+        </Text>
+      </View>
     </View>
-    </View>)
+  );
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()} style={{ flex: 1 }}>

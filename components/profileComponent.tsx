@@ -31,11 +31,12 @@ export default function ProfileComponent() {
     });
   };
 
-  const handleLinkToComments = (postId: string, postImage: string) => {
+  const handleLinkToComments = (postId: string, authorId: string, postImage: string) => {
     router.push({
       pathname: "/(tabs)/commentsScreen",
       params: {
         selectedPostId: postId,
+        postAuthorId: authorId,
         selectedImage: postImage,
       },
     });
@@ -52,7 +53,7 @@ export default function ProfileComponent() {
           <View style={{ flex: 1, flexDirection: "row", gap: 24 }}>
             <Pressable
               style={styles.descrItem}
-              onPress={() => handleLinkToComments(item[0], item[1].postImage)}
+              onPress={() => handleLinkToComments(item[0], item[1].userId, item[1].postImage)}
             >
               {!item[1].commentsCount ? (
                 <FontAwesome name="comment-o" size={24} color="#BDBDBD" />
