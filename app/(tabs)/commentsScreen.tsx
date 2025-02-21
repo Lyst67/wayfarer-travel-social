@@ -48,7 +48,10 @@ export default function CommentsScreen() {
     );
   const commentTime = `${formatData.date.join(" ")} | ${formatData.clock}`;
   const comments = useAppSelector(selectComments);
+  const commentsArray = Object.entries(comments);
+  
   console.log(comments)
+
   const commentData = {
     commentedPostId: selectedPostId,
     commentedImage: selectedImage,
@@ -68,17 +71,17 @@ export default function CommentsScreen() {
       Alert.alert("Comment successfully created!");
     };
 
-  const renderItem = ({ item }: { item: any }) => (<View style={styles.commentContainer}>
-      <View style={styles.userPhotoContainer}>{!item[1].userImage ? (
-            <FontAwesome5 name="user" size={44} color="lightgrey" />
-          ) : (
-            <UserImage selectedImage={item[1].authorImage} />
-          )}</View>
-    <View style={styles.commentTextContainer}>
-      <Text style={styles.commentText}>{item[1].commentText}</Text>
-    <Text style={styles.commantTime}>{item[1].commentTime}</Text>
-    </View>
-    </View>)
+  // const renderItem = ({ item }: { item: any }) => (<View style={styles.commentContainer}>
+  //     <View style={styles.userPhotoContainer}>{!item[1].userImage ? (
+  //           <FontAwesome5 name="user" size={44} color="lightgrey" />
+  //         ) : (
+  //           <UserImage selectedImage={item[1].authorImage} />
+  //         )}</View>
+  //   <View style={styles.commentTextContainer}>
+  //     <Text style={styles.commentText}>{item[1].commentText}</Text>
+  //   <Text style={styles.commantTime}>{item[1].commentTime}</Text>
+  //   </View>
+  //   </View>)
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()} style={{ flex: 1 }}>
@@ -89,9 +92,9 @@ export default function CommentsScreen() {
         <View style={{ flex: 1 }}>
           {comments.length > 0 ? (
             <FlatList
-              data={comments}
+              data={commentsArray}
               keyExtractor={(item) => item[0]}
-              renderItem={renderItem}
+              renderItem={({item}) => <Text>item</Text>}
             />
            ) : (
             <Text style={{textAlign: "center"}}>There are no comments yet.</Text>

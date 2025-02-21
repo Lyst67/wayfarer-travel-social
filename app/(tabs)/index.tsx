@@ -28,8 +28,11 @@ export default function PostsScreen() {
   const [hasMounted, setHasMounted] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
   const [initializing, setInitializing] = useState<boolean>(true);
-  const selectedPosts = useAppSelector(selectUserPosts);
   const auth = getAuth();
+  const selectedPosts = useAppSelector(selectUserPosts);
+  const postsArray = Object.entries(selectedPosts)
+  // console.log(selectedPosts);
+  
 
   const currentUser = (user: FirebaseAuthTypes.User | null) => {
     setUser(user);
@@ -161,7 +164,7 @@ export default function PostsScreen() {
   return (
     <View style={styles.container}>
       {selectedPosts.length > 0 ? <FlatList
-        data={selectedPosts}
+        data={postsArray}
         keyExtractor={(item) => item[0]}
         renderItem={renderItem}
        /> :

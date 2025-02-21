@@ -17,7 +17,8 @@ export default function ProfileComponent() {
   const userName = useAppSelector(selectName);
   const currentUserId = useAppSelector(selectUserId)
   const selectedPosts = useAppSelector(selectUserPosts);
-  const filteredComments = selectedPosts.filter(item => item[1].userId === currentUserId);
+  const postsArray = Object.entries(selectedPosts)
+  const filteredComments = postsArray.filter(item => item[1].userId === currentUserId);
 
   const handleLinkToMapScreen = (location: LatLng, locationMark: string) => {
     router.push({
@@ -97,13 +98,12 @@ export default function ProfileComponent() {
         <UserImage selectedImage={userImage} />
       </View>
       <Text style={styles.text}>{userName}</Text>
-
-      <FlatList
-        data={filteredComments}
-        renderItem={renderItem}
+       {selectedPosts.length > 0 ? <FlatList
+        data={postsArray}
         keyExtractor={(item) => item[0]}
-        onEndReachedThreshold={0.5}
-      />
+        renderItem={renderItem}
+       /> :
+       <Text style={{textAlign: "center"}}>There are any posts yet.</Text>}
     </View>
   );
 }
