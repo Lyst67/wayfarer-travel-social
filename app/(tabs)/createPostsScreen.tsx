@@ -38,7 +38,7 @@ export default function CreatePostsScreen() {
   const [address, setAddress] = useState<
     Location.LocationGeocodedAddress[] | null
   >();
-  const [markText, setMarkText] = useState<string | null>();
+  const [markText, setMarkText] = useState<string | undefined>();
   const isLoading = useAppSelector(selectIsLoading)
   const error = useAppSelector(selectError)
   const userId = useAppSelector(selectUserId);
@@ -46,7 +46,6 @@ export default function CreatePostsScreen() {
   const userEmail = useAppSelector(selectEmail);
   const userImage = useAppSelector(selectUserImage);
 //   const likesCount = useAppSelector(selectComments);
-//   const commentsCount = useAppSelector(selectComments);
  
   const postData = {
     userId: userId,
@@ -57,8 +56,8 @@ export default function CreatePostsScreen() {
     imageName: postName,
     postLocation: location,
     locationMark: markText,
-//     likesCount:
-//     commentsCount:
+    likesCount: 0,
+    likes: null,
   };
 
   useEffect(() => {
@@ -71,7 +70,7 @@ export default function CreatePostsScreen() {
       setPostImage("");
       setPostName("");
       setPostPlace("");
-      setAddress("");
+      setAddress(null);
       setMarkText("")
       setLocation(null);
     }

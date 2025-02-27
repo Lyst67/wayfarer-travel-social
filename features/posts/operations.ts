@@ -1,6 +1,6 @@
 import { createAsyncThunk, nanoid } from "@reduxjs/toolkit";
 import { Post } from "./postsSlice";
-import { getDatabase, set, ref, child, get, onChildAdded, onChildRemoved, update, onChildChanged} from "@react-native-firebase/database";
+import { getDatabase, set, ref, child, get, onChildAdded, onChildRemoved, update, onChildChanged, runTransaction} from "@react-native-firebase/database";
 
 const db = getDatabase();
 
@@ -9,9 +9,9 @@ export const fetchPosts = createAsyncThunk<Post[], undefined>(
   async (_, { rejectWithValue }) => {
     try {
       const refDb = ref(db)
-      const snapshot = get(child(refDb, "/posts"));
-      if ((await snapshot).exists()) {
-        const data = await (await snapshot).val()
+      const snapshot = await get(child(refDb, "/posts"));
+      if ((snapshot).exists()) {
+        const data = await (snapshot).val()
         return data as Post[]
       } else {return []}
     } catch (error) {
@@ -38,7 +38,6 @@ export const createPost = createAsyncThunk<
       postLocation: postData.postLocation,
       locationMark: postData.locationMark,
       likesCount: postData.likesCount,
-      commentsCount: postData.commentsCount,
     });
     const newPostData: Post[] = [];
     const postsRef = db.ref("/posts")
@@ -88,11 +87,11 @@ export const updatePost = createAsyncThunk<
       postLocation: postData.postLocation,
       locationMark: postData.locationMark,
       likesCount: postData.likesCount,
-      commentsCount: postData.commentsCount,
+      likes: postData.likes,
     });
 
     const changedPostData: Post[] = [];
-    const postsRef = db.ref("/posts")
+    const postsRef = ref( db, "/posts")
     onChildChanged(postsRef, function (snapshot) {
       const changedPost = snapshot.val();
       changedPostData.push(changedPost);
@@ -102,3 +101,58 @@ export const updatePost = createAsyncThunk<
     return rejectWithValue(error);
   }
 });
+
+export const incrementPostLike = createAsyncThunk<  
+  Post,  
+  { postId: string; uid: string },  
+  { rejectValue: any }  
+>(  
+  "posts/increaseLikeCount",  
+  async ({ postId, uid }, thunkAPI) => {  
+    console.log("Thunk initiated for post:", postId, "by user:", uid); 
+    try {  
+      // const updates: any = {};  
+      // updates[`posts/${postId}/likes/${uid}`] = true;   
+      // updates[`posts/${postId}/likesCount`] = increment(1);  
+      // await update(ref(db), updates);
+       
+await update(ref(db, `/posts/${postId}/likes/${uid}`), { liked: true }); 
+const countRef = ref(db, `/posts/${postId}/likesCount`);  
+await runTransaction(countRef, (currentCount) => {  
+  return (currentCount || 0) + 1;  
+});
+      const snapshot = await get(child(ref(db), `/posts/${postId}`));    
+      if (snapshot.exists()) {  
+        return snapshot.val() as Post;  
+      } else {  
+        return thunkAPI.rejectWithValue(new Error('Post not found'));  
+      }  
+    } catch (error: any) {  
+      console.error("Error during the thunk execution:", error);  
+      return thunkAPI.rejectWithValue(error.message || 'An error occurred');  
+    }  
+  }  
+);   
+
+export const decrementPostLike = createAsyncThunk<
+Post, {postId: string, uid: string}, { rejectValue: any }
+>("posts/reduceLikeCount", async ( {postId, uid}, thunkAPI) => {
+  try { 
+    await update(ref(db, `/posts/${postId}/likes/${uid}`), { liked: false }); 
+// await update(ref(db, `/posts/${postId}`), {likesCount: -1}); 
+const countRef = ref(db, `/posts/${postId}/likesCount`);  
+await runTransaction(countRef, (currentCount) => {  
+  return (currentCount || 0) - 1;  
+});
+
+const snapshot = await get(child(ref(db), `/posts/${postId}`))
+if (snapshot.exists()) {
+  return await snapshot.val() as Post 
+} else {  
+  return thunkAPI.rejectWithValue(new Error('Post not found'));  
+} 
+  }
+  catch (error) {
+   return thunkAPI.rejectWithValue(error)
+  }
+} ) 

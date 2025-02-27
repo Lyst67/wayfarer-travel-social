@@ -9,7 +9,7 @@ type Props = {
   postName: (name: string | undefined) => void;
   postPlace: (place: string | undefined) => void;
   location: LatLng | null;
-  text: string;
+  text: string | undefined;
 };
 
 export default function PostInput({

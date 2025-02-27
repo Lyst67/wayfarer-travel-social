@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createPost, deletePost, fetchPosts, updatePost } from "./operations";
+import { createPost, decrementPostLike, deletePost, fetchPosts, incrementPostLike, updatePost, } from "./operations";
 import { LatLng } from "react-native-maps";
 
 export interface Post {
@@ -12,7 +12,7 @@ export interface Post {
   postLocation: LatLng | null;
   locationMark: null | string | undefined;
   likesCount: null | number;
-  commentsCount: null | number;
+  likes: {[uid: string]: boolean}[] | null;
 }
 // export interface PostItem {
 //   [postId: string]: Post;
@@ -85,6 +85,37 @@ export const postsSlice = createSlice({
         state.posts.splice(index, 1, action.payload);
       })
       .addCase(updatePost.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(incrementPostLike.pending, (state)=>{
+        state.isLoading = true;
+      })
+      .addCase(incrementPostLike.fulfilled, (state, action)=>{
+        console.log("Post like updated in reducer", action.payload); 
+        state.isLoading = false;
+        state.error = null;
+        const postIds = Object.keys(state.posts);
+        const updatedPostId = Object.keys(action.payload)[0];
+        const index = postIds.findIndex((item) => item === updatedPostId);
+        state.posts.splice(index, 1, action.payload);
+      })
+      .addCase(incrementPostLike.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(decrementPostLike.pending, (state)=>{
+        state.isLoading = true;
+      })
+      .addCase(decrementPostLike.fulfilled, (state, action)=>{
+        state.isLoading = false;
+        state.error = null;
+        const postIds = Object.keys(state.posts);
+        const updatedPostId = Object.keys(action.payload)[0];
+        const index = postIds.findIndex((item) => item === updatedPostId);
+        state.posts.splice(index, 1, action.payload);
+      })
+      .addCase(decrementPostLike.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

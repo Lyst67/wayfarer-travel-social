@@ -1,10 +1,11 @@
 import { View, Text, StyleSheet, Pressable, FlatList } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import { router } from "expo-router";
 import { LatLng } from "react-native-maps";
 import { useAppSelector } from "@/hooks";
 import { selectName, selectUserImage, selectUserId } from "@/features/user/userSelectors";
 import { selectUserPosts } from "@/features/posts/postsSelectors";
+import { selectComments } from "@/features/comments/commentsSelector";
 
 import UserImage from "./userImage";
 import ImageViewer from "./imageViwer";
@@ -17,8 +18,16 @@ export default function ProfileComponent() {
   const userName = useAppSelector(selectName);
   const currentUserId = useAppSelector(selectUserId)
   const selectedPosts = useAppSelector(selectUserPosts);
+  const selectedComments = useAppSelector(selectComments)
   const postsArray = Object.entries(selectedPosts)
   const filteredPosts = postsArray.filter(item => item[1].userId === currentUserId);
+  const commentsCount = (postId: string) => {
+    return (
+      Object.values(selectedComments).filter(
+        (comment) => comment.commentedPostId === postId
+      ).length || 0
+    );
+  };
 
   const handleLinkToMapScreen = (location: LatLng, locationMark: string) => {
     router.push({
@@ -55,13 +64,13 @@ export default function ProfileComponent() {
               style={styles.descrItem}
               onPress={() => handleLinkToComments(item[0], item[1].userId, item[1].postImage)}
             >
-              {!item[1].commentsCount ? (
+              {commentsCount(item[0]) === 0 ? (
                 <FontAwesome name="comment-o" size={24} color="#BDBDBD" />
               ) : (
                 <FontAwesome name="comment" size={24} color="#FF6C00" />
               )}
               <Text style={[styles.imageText, { color: "#BDBDBD" }]}>
-                {item[1].commentsCount ? item[1].commentsCount : 0}
+                {commentsCount(item[0])}
               </Text>
             </Pressable>
             <View style={styles.descrItem}>

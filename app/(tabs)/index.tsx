@@ -7,12 +7,22 @@ import {
   Pressable,
   ActivityIndicator,
   FlatList,
+  Alert,
 } from "react-native";
-import { fetchPosts } from "@/features/posts/operations";
+import {
+  decrementPostLike,
+  fetchPosts,
+  incrementPostLike,
+} from "@/features/posts/operations";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectUserPosts } from "@/features/posts/postsSelectors";
 import { LatLng } from "react-native-maps";
-import { getAuth, onAuthStateChanged, FirebaseAuthTypes } from '@react-native-firebase/auth';
+import {
+  getAuth,
+  onAuthStateChanged,
+  FirebaseAuthTypes,
+} from "@react-native-firebase/auth";
+import { selectComments } from "@/features/comments/commentsSelector";
 
 import ImageViewer from "@/components/imageViwer";
 import UserImage from "@/components/userImage";
@@ -21,22 +31,28 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-
 export default function PostsScreen() {
-  const dispatch = useAppDispatch();
-  const segments = useSegments();
   const [hasMounted, setHasMounted] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
   const [initializing, setInitializing] = useState<boolean>(true);
+  const dispatch = useAppDispatch();
+  const segments = useSegments();
   const auth = getAuth();
   const selectedPosts = useAppSelector(selectUserPosts);
-  const postsArray = Object.entries(selectedPosts)
-//   console.log(selectedPosts);
-  
+  const selectedComments = useAppSelector(selectComments);
+  const postsArray = Object.entries(selectedPosts);
+
+  const commentsCount = (postId: string) => {
+    return (
+      Object.values(selectedComments).filter(
+        (comment) => comment.commentedPostId === postId
+      ).length || 0
+    );
+  };
 
   const currentUser = (user: FirebaseAuthTypes.User | null) => {
     setUser(user);
-      console.log("User:", user?.displayName);
+    console.log("User:", user?.displayName);
     if (initializing) {
       setInitializing(false);
     }
@@ -64,14 +80,6 @@ export default function PostsScreen() {
     }
   }, [user, hasMounted]);
 
-  if (initializing) {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
   const handleLinkToMapScreen = (location: LatLng, locationMark: string) => {
     router.push({
       pathname: "/mapScreen",
@@ -83,7 +91,11 @@ export default function PostsScreen() {
     });
   };
 
-  const handleLinkToComments = (postId: string, authorId: string, postImage: string) => {
+  const handleLinkToComments = (
+    postId: string,
+    authorId: string,
+    postImage: string
+  ) => {
     router.push({
       pathname: "/(tabs)/commentsScreen",
       params: {
@@ -93,6 +105,36 @@ export default function PostsScreen() {
       },
     });
   };
+ 
+  const handleToggleLike = (postId: string, postData: any) => {
+    const liked = () => {return !user || postData[1] && !postData[1].likes || !postData.likes[user.uid] ? false : postData.likes[user.uid].liked}  
+    console.log(liked());
+    console.log(user?.uid);
+    try {
+      if (!liked() && user?.uid) {
+        dispatch(incrementPostLike({ postId, uid: user.uid }));
+        Alert.alert("Like successfully created!");
+        dispatch(fetchPosts());
+      } else if (liked() && user?.uid) {
+        dispatch(decrementPostLike({ postId, uid: user.uid }));
+        Alert.alert("Like successfully deleted!");
+        dispatch(fetchPosts());
+      } else {
+        return;
+      }
+    } catch (error) {
+      console.error("Like failed:", error);
+      Alert.alert("Failed to create like.");
+    }
+  };
+
+  if (initializing) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   const renderItem = ({ item }: { item: any }) => (
     <View style={styles.userPostContainer}>
@@ -115,30 +157,35 @@ export default function PostsScreen() {
         </View>
         <Text style={styles.imageText}>{item[1].imageName}</Text>
         <View style={styles.imageDescr}>
-        <View style={{ flex: 1, flexDirection: "row", gap: 24 }}>
+          <View style={{ flex: 1, flexDirection: "row", gap: 24 }}>
             <Pressable
               style={styles.descrItem}
-              onPress={() => handleLinkToComments(item[0], item[1].userId, item[1].postImage)}
+              onPress={() =>
+                handleLinkToComments(item[0], item[1].userId, item[1].postImage)
+              }
             >
-              {!item[1].commentsCount ? (
+              {commentsCount(item[0]) === 0 ? (
                 <FontAwesome name="comment-o" size={24} color="#BDBDBD" />
               ) : (
                 <FontAwesome name="comment" size={24} color="#FF6C00" />
               )}
               <Text style={[styles.imageText, { color: "#BDBDBD" }]}>
-                {item[1].commentsCount ? item[1].commentsCount : 0}
+                {commentsCount(item[0])}
               </Text>
             </Pressable>
-            <View style={styles.descrItem}>
-              {!item[1].likesCount ? (
+            <Pressable
+              style={styles.descrItem}
+              onPress={() => handleToggleLike(item[0], item[1])}     
+            >
+              {user && item[1].likes && item[1].likes[user.uid] && !item[1].likes[user.uid].liked ? (
                 <AntDesign name="like2" size={24} color="#FF6C00" />
               ) : (
                 <AntDesign name="like1" size={24} color="#FF6C00" />
               )}
               <Text style={[styles.imageText, { color: "#BDBDBD" }]}>
-                {item[1].likesCount ? item[1].likesCount : 0}
+              {item[1].likesCount ? item[1].likesCount : 0}
               </Text>
-            </View>
+            </Pressable>
           </View>
           <Pressable
             onPress={() =>
@@ -154,7 +201,7 @@ export default function PostsScreen() {
             <Text
               style={[styles.imageText, { textDecorationLine: "underline" }]}
             >
-              {item[1].locationMark.split(",").slice(1)}
+              {item[1].locationMark ? item[1].locationMark.split(",").slice(1) : "Place"}
             </Text>
           </Pressable>
         </View>
@@ -164,12 +211,15 @@ export default function PostsScreen() {
 
   return (
     <View style={styles.container}>
-      {postsArray.length ? <FlatList
-        data={postsArray}
-        keyExtractor={(item) => item[0]}
-        renderItem={renderItem}
-       /> :
-       <Text style={{textAlign: "center"}}>There are no posts yet.</Text>}
+      {postsArray.length ? (
+        <FlatList
+          data={postsArray}
+          keyExtractor={(item) => item[0]}
+          renderItem={renderItem}
+        />
+      ) : (
+        <Text style={{ textAlign: "center" }}>There are no posts yet.</Text>
+      )}
     </View>
   );
 }
