@@ -25,7 +25,7 @@
       "package": "com.wayfarer.app",
       "config": {
         "googleMaps": {
-         
+          "apiKey": "process.env.EXPO_PUBLIC_GOOGLE_SERVICE_API_KEY"
         }
       },
       "adaptiveIcon": {
@@ -59,16 +59,16 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow $(NativeApp) to access your camera",
-          "microphonePermission": "Allow $(NativeApp) to access your microphone",
+          "cameraPermission": "Allow $(Wayfarer) to access your camera",
+          "microphonePermission": "Allow $(Wayfarer) to access your microphone",
           "recordAudioAndroid": true
         }
       ],
       [
         "expo-media-library",
         {
-          "photosPermission": "Allow $(NativeApp) to access your photos.",
-          "savePhotosPermission": "Allow $(NativeApp) to save photos.",
+          "photosPermission": "Allow $(Wayfarer) to access your photos.",
+          "savePhotosPermission": "Allow $(Wayfarer) to save photos.",
           "isAccessMediaLocationEnabled": true
         }
       ]
