@@ -167,10 +167,6 @@ export default function ScreensLayout() {
           },
         }}
       />
-      <Tabs.Screen
-        name="gallery"
-        options={{ headerShown: false, href: null }}
-      />
     </Tabs>
   );
 }

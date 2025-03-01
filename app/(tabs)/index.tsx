@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   FlatList,
   Alert,
+  Button,
 } from "react-native";
 import {
   decrementPostLike,
@@ -30,6 +31,7 @@ import Feather from "@expo/vector-icons/Feather";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { routeToScreen } from "expo-router/build/useScreens";
 
 export default function PostsScreen() {
   const [hasMounted, setHasMounted] = useState(false);
@@ -211,6 +213,7 @@ export default function PostsScreen() {
 
   return (
     <View style={styles.container}>
+      <Button title="Gallery" onPress={()=> router.replace("/gallery")}/>
       {postsArray.length ? (
         <FlatList
           data={postsArray}
