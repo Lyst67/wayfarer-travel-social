@@ -213,7 +213,6 @@ export default function PostsScreen() {
 
   return (
     <View style={styles.container}>
-      <Button title="Gallery" onPress={()=> router.replace("/gallery")}/>
       {postsArray.length ? (
         <FlatList
           data={postsArray}
